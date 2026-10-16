@@ -129,7 +129,9 @@
         "useSystemProxy": "使用系统代理更新",
         "useClashProxy": "使用内核代理更新",
         "acceptInvalidCerts": "允许无效证书（危险）",
-        "allowAutoUpdate": "允许自动更新"
+        "allowAutoUpdate": "允许自动更新",
+        "happCompat": "Happ compatibility mode",
+        "happCompatHelper": "Requests the subscription as Happ and converts Xray configs to Mihomo"
       },
       "types": {
         "remote": "远程",

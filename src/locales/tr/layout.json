@@ -59,7 +59,9 @@
       "coreNotRunningDescription": "Open the dashboard to start or repair the core.",
       "noProxies": "This group has no proxies",
       "openDashboard": "Open Dashboard",
-      "quit": "Quit"
+      "quit": "Quit",
+      "powerOn": "Turn on",
+      "powerOff": "Turn off"
     }
   },
   "feedback": {

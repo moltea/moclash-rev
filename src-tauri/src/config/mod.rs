@@ -10,6 +10,7 @@ pub mod profiles;
 pub mod runtime;
 pub(crate) mod snapshot;
 mod verge;
+mod xray_subscription;
 
 pub(crate) use self::config::Config;
 pub use self::{clash::*, encrypt::*, mixed_port::*, prfitem::*, profiles::*, verge::*};

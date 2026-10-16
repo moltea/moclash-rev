@@ -129,7 +129,9 @@
         "useSystemProxy": "Использовать системный прокси для обновления",
         "useClashProxy": "Использовать Clash proxy для обновления",
         "acceptInvalidCerts": "Принимать недействительные сертификаты (ОПАСНО)",
-        "allowAutoUpdate": "Разрешить автообновление"
+        "allowAutoUpdate": "Разрешить автообновление",
+        "happCompat": "Режим совместимости с Happ",
+        "happCompatHelper": "Запрашивает подписку как Happ и конвертирует конфиги Xray в Mihomo"
       },
       "types": {
         "remote": "Удалённый",

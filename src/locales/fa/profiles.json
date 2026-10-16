@@ -129,7 +129,9 @@
         "useSystemProxy": "استفاده از پراکسی سیستم",
         "useClashProxy": "استفاده از پراکسی Clash",
         "acceptInvalidCerts": "پذیرش گواهی‌نامه‌های نامعتبر (خطرناک)",
-        "allowAutoUpdate": "Allow Auto Update"
+        "allowAutoUpdate": "Allow Auto Update",
+        "happCompat": "Happ compatibility mode",
+        "happCompatHelper": "Requests the subscription as Happ and converts Xray configs to Mihomo"
       },
       "types": {
         "remote": "از راه دور",

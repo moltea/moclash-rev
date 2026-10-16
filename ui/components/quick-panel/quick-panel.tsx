@@ -34,7 +34,7 @@ import { cn } from '@ui/lib/utils'
 
 import { QuickPanelMode } from './quick-panel-mode'
 import { QuickPanelProxies } from './quick-panel-proxies'
-import { QuickPanelSwitches } from './quick-panel-switches'
+import { QuickPanelPower, QuickPanelSwitches } from './quick-panel-switches'
 
 const OS = getSystem()
 
@@ -161,18 +161,24 @@ export const QuickPanel = () => {
           OS === 'macos' && 'rounded-xl border',
         )}
       >
-        <div className="flex min-w-0 items-center gap-2">
-          <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
-            <FileTextIcon className="size-4" />
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="flex min-w-0 flex-1 items-center gap-2">
+            <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
+              <FileTextIcon className="size-4" />
+            </div>
+            <div className="flex min-w-0 flex-col">
+              <span className="text-[0.625rem] text-muted-foreground">
+                {t('layout.components.quickPanel.profile')}
+              </span>
+              <span
+                className="truncate text-sm font-medium"
+                title={profileName}
+              >
+                {profileName}
+              </span>
+            </div>
           </div>
-          <div className="flex min-w-0 flex-col">
-            <span className="text-[0.625rem] text-muted-foreground">
-              {t('layout.components.quickPanel.profile')}
-            </span>
-            <span className="truncate text-sm font-medium" title={profileName}>
-              {profileName}
-            </span>
-          </div>
+          <QuickPanelPower />
         </div>
 
         <QuickPanelBody />

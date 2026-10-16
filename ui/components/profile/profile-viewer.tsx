@@ -12,6 +12,7 @@ import { version } from '@root/package.json'
 import { BaseDialog } from '@ui/components/base'
 import {
   Field,
+  FieldContent,
   FieldDescription,
   FieldGroup,
   FieldLabel,
@@ -64,6 +65,8 @@ export interface ProfileViewerRef {
 type ProfileViewerProps = Props & { ref?: Ref<ProfileViewerRef> }
 
 const MIN_UPDATE_INTERVAL = 1440
+const HAPP_USER_AGENT = 'Happ/4.5.4'
+const DEFAULT_USER_AGENT = `clash-verge/v${version}`
 
 export function ProfileViewer({ onChange, ref }: ProfileViewerProps) {
   const { t } = useTranslation()
@@ -107,6 +110,16 @@ export function ProfileViewer({ onChange, ref }: ProfileViewerProps) {
 
   const selfProxy = watch('option.self_proxy')
   const withProxy = watch('option.with_proxy')
+  const happCompat = watch('option.happ_compat')
+
+  const handleHappCompatChange = (checked: boolean) => {
+    const userAgent = getValues('option.user_agent') ?? ''
+    if (checked && (!userAgent || userAgent === DEFAULT_USER_AGENT)) {
+      setValue('option.user_agent', HAPP_USER_AGENT)
+    } else if (!checked && userAgent === HAPP_USER_AGENT) {
+      setValue('option.user_agent', '')
+    }
+  }
 
   useEffect(() => {
     if (selfProxy) setValue('option.with_proxy', false)
@@ -405,9 +418,36 @@ export function ProfileViewer({ onChange, ref }: ProfileViewerProps) {
                     id="profile-user-agent"
                     autoComplete="off"
                     autoCorrect="off"
-                    placeholder={`clash-verge/v${version}`}
+                    placeholder={
+                      happCompat ? HAPP_USER_AGENT : DEFAULT_USER_AGENT
+                    }
                     {...field}
                     value={field.value ?? ''}
+                  />
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="option.happ_compat"
+              control={control}
+              render={({ field }) => (
+                <Field orientation="horizontal">
+                  <FieldContent>
+                    <FieldLabel htmlFor="profile-happ-compat">
+                      {t('profiles.modals.profileForm.fields.happCompat')}
+                    </FieldLabel>
+                    <FieldDescription>
+                      {t('profiles.modals.profileForm.fields.happCompatHelper')}
+                    </FieldDescription>
+                  </FieldContent>
+                  <Switch
+                    id="profile-happ-compat"
+                    checked={!!field.value}
+                    onCheckedChange={(checked) => {
+                      field.onChange(checked)
+                      handleHappCompatChange(checked)
+                    }}
                   />
                 </Field>
               )}

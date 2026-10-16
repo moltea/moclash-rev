@@ -222,6 +222,8 @@ export interface TranslationResources {
           noProfileDescription: string
           noProxies: string
           openDashboard: string
+          powerOff: string
+          powerOn: string
           profile: string
           quit: string
         }
@@ -402,6 +404,8 @@ export interface TranslationResources {
             acceptInvalidCerts: string
             allowAutoUpdate: string
             description: string
+            happCompat: string
+            happCompatHelper: string
             httpTimeout: string
             subscriptionUrl: string
             type: string

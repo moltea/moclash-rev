@@ -165,6 +165,7 @@ export const commands = {
       /**  default is `false` */
       danger_accept_invalid_certs?: boolean | null
       allow_auto_update?: boolean | null
+      happ_compat?: boolean | null
       merge?: string | null
       script?: string | null
       rules?: string | null
@@ -189,6 +190,7 @@ export const commands = {
       /**  default is `false` */
       danger_accept_invalid_certs?: boolean | null
       allow_auto_update?: boolean | null
+      happ_compat?: boolean | null
       merge?: string | null
       script?: string | null
       rules?: string | null
@@ -710,6 +712,7 @@ export type PrfOption_Deserialize = {
   /**  default is `false` */
   danger_accept_invalid_certs?: boolean | null
   allow_auto_update?: boolean | null
+  happ_compat?: boolean | null
   merge?: string | null
   script?: string | null
   rules?: string | null
@@ -730,6 +733,7 @@ export type PrfOption_Serialize = {
   /**  default is `false` */
   danger_accept_invalid_certs?: boolean | null
   allow_auto_update?: boolean | null
+  happ_compat?: boolean | null
   merge: string | null
   script: string | null
   rules: string | null

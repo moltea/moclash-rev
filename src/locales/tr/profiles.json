@@ -129,7 +129,9 @@
         "useSystemProxy": "Sistem Vekil'ini Kullan",
         "useClashProxy": "Clash Vekil'ini Kullan",
         "acceptInvalidCerts": "Geçersiz Sertifikalara İzin Ver (Tehlikeli)",
-        "allowAutoUpdate": "Otomatik Güncellemeye İzin Ver"
+        "allowAutoUpdate": "Otomatik Güncellemeye İzin Ver",
+        "happCompat": "Happ compatibility mode",
+        "happCompatHelper": "Requests the subscription as Happ and converts Xray configs to Mihomo"
       },
       "types": {
         "remote": "Uzak",

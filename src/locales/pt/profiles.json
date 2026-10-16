@@ -129,7 +129,9 @@
         "useSystemProxy": "Usar proxy do sistema",
         "useClashProxy": "Usar proxy Clash",
         "acceptInvalidCerts": "Permitir certificados inválidos (perigoso)",
-        "allowAutoUpdate": "Permitir atualização automática"
+        "allowAutoUpdate": "Permitir atualização automática",
+        "happCompat": "Happ compatibility mode",
+        "happCompatHelper": "Requests the subscription as Happ and converts Xray configs to Mihomo"
       },
       "types": {
         "remote": "Remoto",

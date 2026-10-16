@@ -1,3 +1,4 @@
+use super::xray_subscription::{self, HAPP_USER_AGENT};
 use crate::{
     config::profiles,
     utils::{
@@ -62,7 +63,7 @@ fn header_text(headers: &HeaderMap, name: &str) -> Option<String> {
     (!text.is_empty()).then(|| text.into())
 }
 
-fn decode_base64_text(encoded: &str) -> Option<std::string::String> {
+pub(super) fn decode_base64_text(encoded: &str) -> Option<std::string::String> {
     let encoded = encoded.trim().trim_end_matches('=');
     let bytes = general_purpose::STANDARD_NO_PAD
         .decode(encoded)
@@ -182,6 +183,8 @@ pub struct PrfOption {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allow_auto_update: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub happ_compat: Option<bool>,
     #[specta(type = Option<std::string::String>)]
     pub merge: Option<String>,
     #[specta(type = Option<std::string::String>)]
@@ -212,6 +215,7 @@ impl PrfOption {
                 result.proxies = b_ref.proxies.clone().or(result.proxies);
                 result.groups = b_ref.groups.clone().or(result.groups);
                 result.timeout_seconds = b_ref.timeout_seconds.or(result.timeout_seconds);
+                result.happ_compat = b_ref.happ_compat.or(result.happ_compat);
                 Some(result)
             }
             (Some(a_ref), None) => Some(a_ref.clone()),
@@ -328,7 +332,10 @@ impl PrfItem {
         let self_proxy = option.is_some_and(|o| o.self_proxy.unwrap_or(false));
         let accept_invalid_certs = option.is_some_and(|o| o.danger_accept_invalid_certs.unwrap_or(false));
         let allow_auto_update = Some(allow_auto_update_enabled(option));
-        let user_agent = option.and_then(|o| o.user_agent.clone());
+        let happ_compat = option.and_then(|o| o.happ_compat);
+        let user_agent = option
+            .and_then(|o| o.user_agent.clone())
+            .or_else(|| happ_compat.unwrap_or(false).then(|| HAPP_USER_AGENT.into()));
         let update_interval = option.and_then(|o| o.update_interval);
         let timeout = option.and_then(|o| o.timeout_seconds).unwrap_or(20);
         let mut merge = option.and_then(|o| o.merge.clone());
@@ -439,16 +446,23 @@ impl PrfItem {
             .and_then(|value| value.to_str().ok())
             .and_then(normalize_profile_home_url);
         let announce = header_text(header, "announce");
+        let title = header_text(header, "profile-title");
 
         let uid = help::get_uid("R").into();
         let file = format!("{uid}.yaml").into();
         let name = name
             .map(|s| s.to_owned())
-            .or_else(|| header_text(header, "profile-title"))
+            .or_else(|| title.clone())
             .unwrap_or_else(|| filename.map(|s| s.into()).unwrap_or_else(|| "Remote File".into()));
         let data = resp.text();
 
         let data = data.trim_start_matches('\u{feff}');
+        let converted = if happ_compat.unwrap_or(false) {
+            xray_subscription::convert_subscription(data, title.as_deref())?
+        } else {
+            None
+        };
+        let data = converted.as_deref().unwrap_or(data);
 
         let yaml = serde_yaml_ng::from_str::<Mapping>(data).context("the remote profile data is invalid yaml")?;
 
@@ -493,6 +507,7 @@ impl PrfItem {
             selected: None,
             extra,
             option: Some(PrfOption {
+                user_agent: option.and_then(|o| o.user_agent.clone()),
                 update_interval,
                 merge,
                 script,
@@ -500,6 +515,7 @@ impl PrfItem {
                 proxies,
                 groups,
                 allow_auto_update,
+                happ_compat,
                 ..PrfOption::default()
             }),
             home,

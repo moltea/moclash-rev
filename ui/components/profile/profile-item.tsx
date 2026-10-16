@@ -695,6 +695,14 @@ const ProfileItemBase = (props: ProfileItemProps) => {
                   >
                     {name}
                   </h2>
+                  {option?.happ_compat && (
+                    <Badge
+                      variant="secondary"
+                      title={t('profiles.modals.profileForm.fields.happCompat')}
+                    >
+                      Happ
+                    </Badge>
+                  )}
                   {itemData.support_url && (
                     <Tooltip>
                       <TooltipTrigger asChild>
