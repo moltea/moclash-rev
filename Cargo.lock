@@ -1095,6 +1095,7 @@ dependencies = [
  "anyhow",
  "arc-swap",
  "async-trait",
+ "auto-launch",
  "backon",
  "base64 0.23.1",
  "bitflags 2.13.2",

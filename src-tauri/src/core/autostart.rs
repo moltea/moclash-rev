@@ -5,7 +5,7 @@ use anyhow::Result;
 #[cfg(not(target_os = "windows"))]
 use clash_verge_logging::logging_error;
 use clash_verge_logging::{Type, logging};
-#[cfg(not(target_os = "windows"))]
+#[cfg(target_os = "linux")]
 use tauri_plugin_autostart::ManagerExt as _;
 #[cfg(target_os = "windows")]
 use tauri_plugin_clash_verge_sysinfo::is_current_app_handle_admin;
@@ -21,7 +21,24 @@ pub async fn update_launch() -> Result<()> {
         schtasks::set_auto_launch(is_enable, is_admin).await?;
     }
 
-    #[cfg(not(target_os = "windows"))]
+    #[cfg(target_os = "macos")]
+    {
+        let identifier = &Handle::app_handle().config().identifier;
+        let app_path = std::env::current_exe()?.canonicalize()?;
+        let autostart_manager = auto_launch::AutoLaunchBuilder::new()
+            .set_app_name(identifier)
+            .set_app_path(&app_path.display().to_string())
+            .set_macos_launch_mode(auto_launch::MacOSLaunchMode::LaunchAgent)
+            .set_bundle_identifiers(&[identifier])
+            .build()?;
+        if is_enable {
+            logging_error!(Type::System, "{:?}", autostart_manager.enable());
+        } else {
+            logging_error!(Type::System, "{:?}", autostart_manager.disable());
+        }
+    }
+
+    #[cfg(target_os = "linux")]
     {
         let app_handle = Handle::app_handle();
         let autostart_manager = app_handle.autolaunch();
