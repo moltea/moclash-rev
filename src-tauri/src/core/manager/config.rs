@@ -170,7 +170,7 @@ impl CoreManager {
             }
         });
 
-        help::save_yaml(&runtime_path, &clash_config, Some("# Clash Verge Runtime")).await?;
+        help::save_yaml(&runtime_path, &clash_config, Some("# Moclash Runtime")).await?;
         handle::Handle::notice(status, message);
         Ok(())
     }

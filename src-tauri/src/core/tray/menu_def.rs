@@ -26,6 +26,7 @@ macro_rules! define_menu {
 
 define_menu! {
     dashboard => DASHBOARD, "tray_dashboard", "tray.dashboard",
+    quick_panel => QUICK_PANEL, "tray_quick_panel", "tray.quickPanel",
     rule_mode => RULE_MODE, "tray_rule_mode", "tray.ruleMode",
     global_mode => GLOBAL_MODE, "tray_global_mode", "tray.globalMode",
     direct_mode => DIRECT_MODE, "tray_direct_mode", "tray.directMode",
@@ -56,6 +57,7 @@ pub(crate) enum TrayAction {
     SystemProxy,
     TunMode,
     MainWindow,
+    QuickPanel,
     TrayMenu,
     Unknown,
 }
@@ -66,6 +68,7 @@ impl From<&str> for TrayAction {
             "system_proxy" => Self::SystemProxy,
             "tun_mode" => Self::TunMode,
             "main_window" => Self::MainWindow,
+            "quick_panel" => Self::QuickPanel,
             "tray_menu" => Self::TrayMenu,
             _ => Self::Unknown,
         }

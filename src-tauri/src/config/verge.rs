@@ -224,6 +224,11 @@ pub struct IVerge {
     pub hover_jump_navigator_delay: Option<u64>,
 
     pub enable_external_controller: Option<bool>,
+
+    pub enable_send_hwid: Option<bool>,
+
+    #[specta(type = Option<std::string::String>)]
+    pub custom_hwid: Option<String>,
 }
 
 #[derive(Default, Debug, Clone, Deserialize, Serialize, specta::Type)]
@@ -300,7 +305,7 @@ impl IVerge {
 
         if needs_fix {
             logging!(debug, Type::Config, "正在保存修正后的配置文件...");
-            help::save_yaml(&config_path, &config, Some("# Clash Verge Config")).await?;
+            help::save_yaml(&config_path, &config, Some("# Moclash Config")).await?;
             logging!(info, Type::Config, "配置文件修正完成，需要重新加载配置");
 
             Self::reload_config_after_fix(config).await;
@@ -360,6 +365,7 @@ impl IVerge {
             clash_core: Some("verge-mihomo".into()),
             language: Some(clash_verge_i18n::system_language().into()),
             theme_mode: Some("system".into()),
+            tray_event: Some("quick_panel".into()),
             #[cfg(not(target_os = "windows"))]
             env_type: Some("bash".into()),
             #[cfg(target_os = "windows")]
@@ -422,12 +428,13 @@ impl IVerge {
             enable_dns_settings: Some(false),
             home_cards: None,
             enable_external_controller: Some(false),
+            enable_send_hwid: Some(false),
             ..Self::default()
         }
     }
 
     pub async fn save_file(&self) -> Result<()> {
-        help::save_yaml(&dirs::verge_path()?, &self, Some("# Clash Verge Config")).await
+        help::save_yaml(&dirs::verge_path()?, &self, Some("# Moclash Config")).await
     }
 
     #[allow(clippy::cognitive_complexity)]
@@ -524,6 +531,8 @@ impl IVerge {
         patch!(enable_dns_settings);
         patch!(home_cards);
         patch!(enable_external_controller);
+        patch!(enable_send_hwid);
+        patch!(custom_hwid);
     }
 
     pub fn get_log_level(&self) -> LevelFilter {

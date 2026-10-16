@@ -1,7 +1,7 @@
 use crate::{
     config::profiles,
     utils::{
-        dirs, help,
+        dirs, help, hwid,
         network::{NetworkManager, ProxyType},
         tmpl,
     },
@@ -280,13 +280,15 @@ impl PrfItem {
 
         let url = fix_dirty_url(url)?;
 
+        let hwid_headers = hwid::subscription_headers().await;
         let resp = match NetworkManager::new()
-            .get(
+            .get_with_headers(
                 url.as_str(),
                 proxy_type,
                 Some(timeout),
                 user_agent.clone(),
                 accept_invalid_certs,
+                &hwid_headers,
             )
             .await
         {

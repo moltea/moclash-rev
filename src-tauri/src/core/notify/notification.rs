@@ -342,7 +342,10 @@ impl NotificationSystem {
         // Emitting from a runtime worker can deadlock on macOS when WebKit's protocol handler
         // waits for Tauri's webview lock while emit waits synchronously for the main thread.
         if let Err(err) = app_handle.run_on_main_thread(move || {
-            if let Some(window) = dispatch_handle.get_webview_window("main") {
+            if let Some(window) = dispatch_handle
+                .get_webview_window("main")
+                .or_else(|| dispatch_handle.get_webview_window(crate::core::tray::quick_panel::QUICK_PANEL_LABEL))
+            {
                 Self::emit_to_window(&window, event_name, payload);
             }
         }) {

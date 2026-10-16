@@ -127,7 +127,7 @@ async fn notify_existing_instance(record: &InstanceRecord) -> bool {
     };
     #[cfg(not(target_os = "macos"))]
     let request = if let Some(arg) = std::env::args().nth(1).as_deref() {
-        if arg.starts_with("clash:") {
+        if arg.starts_with("clash:") || arg.starts_with("moclash:") {
             client
                 .get(format!("http://127.0.0.1:{}/commands/scheme", record.port))
                 .query(&[("param", arg)])

@@ -13,7 +13,10 @@ const BACKEND_LOCALES_DIR = path.resolve(
   __dirname,
   '../crates/clash-verge-i18n/locales',
 )
-const DEFAULT_FRONTEND_SOURCE_DIRS = [path.resolve(__dirname, '../src')]
+const DEFAULT_FRONTEND_SOURCE_DIRS = [
+  path.resolve(__dirname, '../src'),
+  path.resolve(__dirname, '../ui'),
+]
 const DEFAULT_BACKEND_SOURCE_DIRS = [
   path.resolve(__dirname, '../src-tauri'),
   path.resolve(__dirname, '../crates'),

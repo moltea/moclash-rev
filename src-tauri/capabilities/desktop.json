@@ -1,8 +1,8 @@
 {
   "identifier": "desktop-capability",
   "platforms": ["macOS", "windows", "linux"],
-  "webviews": ["main"],
-  "windows": ["main"],
+  "webviews": ["main", "quick-panel"],
+  "windows": ["main", "quick-panel"],
   "permissions": [
     "global-shortcut:default",
     "updater:default",

@@ -128,6 +128,7 @@ export default defineConfig([
           allowDefaultProject: [
             'eslint.config.ts',
             `vite.config.mts`,
+            `vite.ui.config.mts`,
             'scripts/*.mjs',
             'tests/*.ts',
             'src/polyfills/*.js',
@@ -249,8 +250,20 @@ export default defineConfig([
     },
   },
   {
-    files: ['src/**/*.{ts,tsx,js,jsx,mts,mjs}'],
+    files: ['{src,ui}/**/*.{ts,tsx,js,jsx,mts,mjs}'],
     rules: ipcBoundaryRules(),
+  },
+  {
+    files: ['ui/components/ui/**/*.tsx'],
+    rules: {
+      'react-compiler/react-compiler': 'off',
+      'react-refresh/only-export-components': 'off',
+      '@eslint-react/no-array-index-key': 'off',
+      '@eslint-react/no-context-provider': 'off',
+      '@eslint-react/no-unstable-context-value': 'off',
+      '@eslint-react/no-use-context': 'off',
+      '@eslint-react/use-state': 'off',
+    },
   },
   {
     files: ['src/services/cmds.ts'],

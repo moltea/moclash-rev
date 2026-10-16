@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "Installing Dependencies for Clash-Verge-Rev"
+echo "Installing Dependencies for Moclash"
 sudo apt-get update
 sudo apt-get install -y \
   build-essential \
@@ -13,5 +13,5 @@ sudo apt-get install -y \
   librsvg2-dev \
   patchelf
 
-echo "Installing Dependencies for Clash-Verge-Rev"
+echo "Installing Dependencies for Moclash"
 pnpm install

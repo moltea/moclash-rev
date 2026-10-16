@@ -12,10 +12,10 @@ notifications:
     'off': Der Systemproxy wurde deaktiviert.
   systemProxyFailed:
     title: Systemproxy
-    body: Der Systemproxy konnte nicht gesetzt werden. Öffnen Sie Clash Verge, um zu sehen, warum.
+    body: Der Systemproxy konnte nicht gesetzt werden. Öffnen Sie Moclash, um zu sehen, warum.
   systemProxyGuardStopped:
     title: Systemproxy-Wächter
-    body: Nach mehreren Fehlversuchen in Folge gestoppt. Öffnen Sie Clash Verge, um zu sehen, warum.
+    body: Nach mehreren Fehlversuchen in Folge gestoppt. Öffnen Sie Moclash, um zu sehen, warum.
   tunModeToggled:
     title: TUN-Modus
     'on': Der TUN-Modus wurde aktiviert.
@@ -28,15 +28,15 @@ notifications:
     body: Profil reaktiviert.
   appQuit:
     title: Beenden steht bevor
-    body: Clash Verge wird gleich beendet.
+    body: Moclash wird gleich beendet.
   updateReady:
-    title: Clash-Verge-Update
+    title: Moclash-Update
     body: Eine neue Version (v{version}) wurde heruntergeladen und kann installiert werden.
     installNow: Jetzt installieren
     later: Später
 service:
-  adminInstallPrompt: Für die Installation des Clash-Verge-Dienstes sind Administratorrechte erforderlich.
-  adminUninstallPrompt: Für die Deinstallation des Clash-Verge-Dienstes sind Administratorrechte erforderlich.
+  adminInstallPrompt: Für die Installation des Moclash-Dienstes sind Administratorrechte erforderlich.
+  adminUninstallPrompt: Für die Deinstallation des Moclash-Dienstes sind Administratorrechte erforderlich.
 core:
   alreadyRunning: 'Der Kern kann nicht gestartet werden: Ein Kernprozess läuft bereits. Beenden Sie die zugehörige App oder den verbliebenen Prozess und versuchen Sie es erneut. Wenn das Problem weiterhin besteht, starten Sie den Computer neu.'
 launchGuard:
@@ -61,6 +61,7 @@ launchGuard:
   ok: OK
 tray:
   dashboard: Übersicht
+  quickPanel: Quick Panel
   ruleMode: Regelmodus
   globalMode: Globaler Modus
   directMode: Direktmodus
@@ -85,7 +86,7 @@ tray:
   coreLog: Core-Log
   restartClash: Clash-Core neu starten
   restartApp: Anwendung neu starten
-  vergeVersion: Verge-Version
+  vergeVersion: Moclash-Version
   more: Mehr
   exit: Beenden
   tooltip:

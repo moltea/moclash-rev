@@ -57,7 +57,7 @@
         "autoLaunch": "起動時に自動起動",
         "runningMode": "実行モード",
         "lastCheckUpdate": "最後の更新チェック",
-        "vergeVersion": "Vergeバージョン"
+        "vergeVersion": "Moclashバージョン"
       },
       "actions": {
         "settings": "設定"

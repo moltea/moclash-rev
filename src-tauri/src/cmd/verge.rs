@@ -14,6 +14,14 @@ pub async fn get_verge_config() -> CmdResult<SharedDraft<IVerge>> {
     feat::fetch_verge_config().await.stringify_err()
 }
 
+#[tauri::command]
+#[specta::specta]
+pub async fn get_device_hwid() -> std::string::String {
+    tokio::task::spawn_blocking(|| crate::utils::hwid::device_hwid().to_owned())
+        .await
+        .unwrap_or_default()
+}
+
 /// 修改Verge配置
 #[tauri::command]
 #[specta::specta]

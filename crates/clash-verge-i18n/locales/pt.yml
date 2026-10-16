@@ -12,10 +12,10 @@ notifications:
     'off': O proxy do sistema foi desativado.
   systemProxyFailed:
     title: Proxy do sistema
-    body: Não foi possível definir o proxy do sistema. Abra o Clash Verge para ver o motivo.
+    body: Não foi possível definir o proxy do sistema. Abra o Moclash para ver o motivo.
   systemProxyGuardStopped:
     title: Proteção do proxy do sistema
-    body: A proteção parou após várias falhas de execução. Abra o Clash Verge para ver o motivo.
+    body: A proteção parou após várias falhas de execução. Abra o Moclash para ver o motivo.
   tunModeToggled:
     title: Modo TUN
     'on': O modo TUN foi ativado.
@@ -28,15 +28,15 @@ notifications:
     body: Perfil reativado.
   appQuit:
     title: Prestes a sair
-    body: O Clash Verge está prestes a sair.
+    body: O Moclash está prestes a sair.
   updateReady:
-    title: Atualização do Clash Verge
+    title: Atualização do Moclash
     body: Uma nova versão (v{version}) foi baixada e está pronta para instalar.
     installNow: Instalar agora
     later: Depois
 service:
-  adminInstallPrompt: A instalação do serviço do Clash Verge requer privilégios de administrador.
-  adminUninstallPrompt: A desinstalação do serviço do Clash Verge requer privilégios de administrador.
+  adminInstallPrompt: A instalação do serviço do Moclash requer privilégios de administrador.
+  adminUninstallPrompt: A desinstalação do serviço do Moclash requer privilégios de administrador.
 core:
   alreadyRunning: 'Não é possível iniciar o núcleo: já há um processo do núcleo em execução. Feche o aplicativo correspondente ou encerre o processo remanescente e tente novamente. Se o problema persistir, reinicie o computador.'
 launchGuard:
@@ -61,6 +61,7 @@ launchGuard:
   ok: OK
 tray:
   dashboard: Painel
+  quickPanel: Quick Panel
   ruleMode: Modo regra
   globalMode: Modo global
   directMode: Modo direto
@@ -85,7 +86,7 @@ tray:
   coreLog: Log do núcleo
   restartClash: Reiniciar o núcleo do Clash
   restartApp: Reiniciar o aplicativo
-  vergeVersion: Versão do Verge
+  vergeVersion: Versão do Moclash
   more: Mais
   exit: Sair
   tooltip:

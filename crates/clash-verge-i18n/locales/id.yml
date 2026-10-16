@@ -12,10 +12,10 @@ notifications:
     'off': System proxy has been disabled.
   systemProxyFailed:
     title: Proxy Sistem
-    body: Proxy sistem tidak dapat diatur. Buka Clash Verge untuk melihat alasannya.
+    body: Proxy sistem tidak dapat diatur. Buka Moclash untuk melihat alasannya.
   systemProxyGuardStopped:
     title: Penjaga Proxy Sistem
-    body: Berhenti setelah gagal beberapa kali berturut-turut. Buka Clash Verge untuk melihat alasannya.
+    body: Berhenti setelah gagal beberapa kali berturut-turut. Buka Moclash untuk melihat alasannya.
   tunModeToggled:
     title: Mode TUN
     'on': TUN mode has been enabled.
@@ -28,15 +28,15 @@ notifications:
     body: Profil diaktifkan kembali.
   appQuit:
     title: Akan Keluar
-    body: Clash Verge akan keluar.
+    body: Moclash akan keluar.
   updateReady:
-    title: Clash Verge Update
+    title: Moclash Update
     body: A new version (v{version}) has been downloaded and is ready to install.
     installNow: Install Now
     later: Later
 service:
-  adminInstallPrompt: Menginstal layanan Clash Verge memerlukan hak administrator.
-  adminUninstallPrompt: Menghapus instalasi layanan Clash Verge memerlukan hak administrator.
+  adminInstallPrompt: Menginstal layanan Moclash memerlukan hak administrator.
+  adminUninstallPrompt: Menghapus instalasi layanan Moclash memerlukan hak administrator.
 core:
   alreadyRunning: 'Tidak dapat memulai inti: proses inti sudah berjalan. Tutup aplikasi terkait atau hentikan proses yang tersisa, lalu coba lagi. Jika masalah berlanjut, mulai ulang komputer.'
 launchGuard:
@@ -61,6 +61,7 @@ launchGuard:
   ok: OK
 tray:
   dashboard: Dasbor
+  quickPanel: Quick Panel
   ruleMode: Mode Aturan
   globalMode: Mode Global
   directMode: Mode Langsung
@@ -85,7 +86,7 @@ tray:
   coreLog: Log Core
   restartClash: Mulai Ulang Core Clash
   restartApp: Mulai Ulang Aplikasi
-  vergeVersion: Versi Verge
+  vergeVersion: Versi Moclash
   more: Lainnya
   exit: Keluar
   tooltip:

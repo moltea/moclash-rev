@@ -152,18 +152,38 @@
           }
         }
       }
+    },
+    "hwid": {
+      "title": "Device Identification",
+      "fields": {
+        "sendHwid": "Send HWID",
+        "deviceHwid": "Device HWID",
+        "customHwid": "Custom HWID"
+      },
+      "tooltips": {
+        "sendHwid": "Send the x-hwid, x-device-os, x-ver-os and x-device-model headers when downloading subscriptions (Remnawave/Happ compatible)",
+        "customHwid": "Leave empty to use the HWID generated for this device"
+      },
+      "placeholders": {
+        "customHwid": "10–64 characters: A-Z a-z 0-9 = -"
+      },
+      "messages": {
+        "invalidHwid": "HWID must be 10–64 characters of Latin letters, digits, = or -",
+        "hwidCopied": "HWID copied to clipboard"
+      }
     }
   },
   "components": {
     "verge": {
       "basic": {
-        "title": "Configurações Básicas do Verge",
+        "title": "Configurações Básicas do Moclash",
         "actions": {
           "browse": "Procurar"
         },
         "trayOptions": {
           "showMainWindow": "Abrir Janela",
           "showTrayMenu": "Abrir Menu",
+          "showQuickPanel": "Show Quick Panel",
           "disable": "Desativar"
         },
         "fields": {
@@ -180,7 +200,7 @@
         }
       },
       "advanced": {
-        "title": "Configurações Avançadas do Verge",
+        "title": "Configurações Avançadas do Moclash",
         "tooltips": {
           "backupInfo": "Suporta backup local ou via WebDAV dos arquivos de configuração",
           "openConfDir": "Se o software funcionar de forma anormal, FAÇA BACKUP e exclua todos os arquivos desta pasta e reinicie o software",
@@ -204,7 +224,7 @@
           "liteModeSettings": "Configurações do Modo Leve",
           "exit": "Sair",
           "exportDiagnostics": "Exportar Informações de Diagnóstico",
-          "vergeVersion": "Versão do Verge"
+          "vergeVersion": "Versão do Moclash"
         }
       },
       "theme": {
@@ -670,11 +690,11 @@
         "coreAlreadyRunning": "Não é possível iniciar o núcleo: já há um processo do núcleo em execução. Feche o aplicativo correspondente ou encerre o processo remanescente e tente novamente. Se o problema persistir, reinicie o computador."
       },
       "sysproxy": {
-        "privilegeRequired": "Não é possível definir o proxy do sistema: o macOS recusou a alteração por falta de privilégios. Instale o serviço do Clash Verge; um administrador também pode desativar a exigência de senha de administrador para configurações do sistema, nas opções avançadas em Ajustes do Sistema → Privacidade e Segurança.",
+        "privilegeRequired": "Não é possível definir o proxy do sistema: o macOS recusou a alteração por falta de privilégios. Instale o serviço do Moclash; um administrador também pode desativar a exigência de senha de administrador para configurações do sistema, nas opções avançadas em Ajustes do Sistema → Privacidade e Segurança.",
         "directFallback": "Falha ao definir o proxy do sistema; o tráfego foi revertido para conexão direta.",
         "guardStopped": "A proteção do proxy do sistema parou após falhar várias vezes ao executar. O proxy do sistema não está mais sendo mantido.",
-        "sidecarWhileServiceReady": "Não foi possível definir o proxy do sistema porque o núcleo ainda está em execução como Sidecar, embora o serviço do Clash Verge esteja pronto. Reinicie o núcleo para mudar para o modo serviço.",
-        "coreNotReady": "Não foi possível ativar o proxy do sistema porque o núcleo não está em execução. Inicie o núcleo (ou instale/repare o serviço do Clash Verge) e tente novamente.",
+        "sidecarWhileServiceReady": "Não foi possível definir o proxy do sistema porque o núcleo ainda está em execução como Sidecar, embora o serviço do Moclash esteja pronto. Reinicie o núcleo para mudar para o modo serviço.",
+        "coreNotReady": "Não foi possível ativar o proxy do sistema porque o núcleo não está em execução. Inicie o núcleo (ou instale/repare o serviço do Moclash) e tente novamente.",
         "systemCallFailed": "Não foi possível gravar o proxy do sistema porque uma chamada de sistema do Windows falhou. Geralmente é temporário, então tente novamente."
       }
     },

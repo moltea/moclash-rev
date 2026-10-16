@@ -349,6 +349,10 @@ export async function openDevTools() {
   return commands.openDevtools()
 }
 
+export async function showMainWindow() {
+  return commands.showMainWindow()
+}
+
 export async function exitApp() {
   return commands.exitApp()
 }
@@ -390,6 +394,10 @@ export async function getNetworkInterfaces() {
 
 export async function getSystemHostname() {
   return commands.getSystemHostname()
+}
+
+export async function getDeviceHwid() {
+  return commands.getDeviceHwid()
 }
 
 export async function getNetworkInterfacesInfo() {

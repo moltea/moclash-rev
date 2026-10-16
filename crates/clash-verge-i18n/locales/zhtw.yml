@@ -12,10 +12,10 @@ notifications:
     'off': 系統代理已關閉。
   systemProxyFailed:
     title: 系統代理
-    body: 系統代理設定失敗。開啟 Clash Verge 查看原因。
+    body: 系統代理設定失敗。開啟 Moclash 查看原因。
   systemProxyGuardStopped:
     title: 系統代理守衛
-    body: 連續多次失敗後已停止守衛。開啟 Clash Verge 查看原因。
+    body: 連續多次失敗後已停止守衛。開啟 Moclash 查看原因。
   tunModeToggled:
     title: 虛擬網路介面卡模式
     'on': 虛擬網路介面卡模式已啟用。
@@ -28,15 +28,15 @@ notifications:
     body: 訂閱已啟用。
   appQuit:
     title: 即將退出
-    body: Clash Verge 即將退出。
+    body: Moclash 即將退出。
   updateReady:
-    title: Clash Verge 更新
+    title: Moclash 更新
     body: 新版本（v{version}）已下載完成，是否立即安裝？
     installNow: 立即安裝
     later: 稍後
 service:
-  adminInstallPrompt: 安裝 Clash Verge 服務需要管理員權限
-  adminUninstallPrompt: 解除安裝 Clash Verge 服務需要管理員權限
+  adminInstallPrompt: 安裝 Moclash 服務需要管理員權限
+  adminUninstallPrompt: 解除安裝 Moclash 服務需要管理員權限
 core:
   alreadyRunning: 無法啟動核心：已有核心程序正在執行。請結束相關應用程式或清理殘留程序後重試。若仍無法解決，請重新啟動電腦。
 launchGuard:
@@ -61,6 +61,7 @@ launchGuard:
   ok: 好
 tray:
   dashboard: 儀表板
+  quickPanel: 快捷面板
   ruleMode: 規則模式
   globalMode: 全域模式
   directMode: 直連模式
@@ -85,7 +86,7 @@ tray:
   coreLog: 核心日誌
   restartClash: 重新啟動 Clash 核心
   restartApp: 重新啟動應用程式
-  vergeVersion: Verge 版本
+  vergeVersion: Moclash 版本
   more: 更多
   exit: 離開
   tooltip:

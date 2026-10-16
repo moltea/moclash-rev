@@ -12,10 +12,10 @@ notifications:
     'off': Sistem vekili devre dışı bırakıldı.
   systemProxyFailed:
     title: Sistem Vekili
-    body: Sistem vekil sunucusu ayarlanamadı. Nedenini görmek için Clash Verge'i açın.
+    body: Sistem vekil sunucusu ayarlanamadı. Nedenini görmek için Moclash'i açın.
   systemProxyGuardStopped:
     title: Sistem Vekili Koruması
-    body: Art arda birkaç başarısızlıktan sonra durdu. Nedenini görmek için Clash Verge'i açın.
+    body: Art arda birkaç başarısızlıktan sonra durdu. Nedenini görmek için Moclash'i açın.
   tunModeToggled:
     title: TUN Modu
     'on': TUN modu etkinleştirildi.
@@ -28,15 +28,15 @@ notifications:
     body: Profil yeniden etkinleştirildi.
   appQuit:
     title: Çıkış Yapılmak Üzere
-    body: Clash Verge kapanmak üzere.
+    body: Moclash kapanmak üzere.
   updateReady:
-    title: Clash Verge Güncellemesi
+    title: Moclash Güncellemesi
     body: Yeni bir sürüm (v{version}) indirildi ve kurulmaya hazır.
     installNow: Şimdi Kur
     later: Daha Sonra
 service:
-  adminInstallPrompt: Clash Verge hizmetini kurmak için yönetici ayrıcalıkları gerekir.
-  adminUninstallPrompt: Clash Verge hizmetini kaldırmak için yönetici ayrıcalıkları gerekir.
+  adminInstallPrompt: Moclash hizmetini kurmak için yönetici ayrıcalıkları gerekir.
+  adminUninstallPrompt: Moclash hizmetini kaldırmak için yönetici ayrıcalıkları gerekir.
 core:
   alreadyRunning: 'Çekirdek başlatılamıyor: bir çekirdek işlemi zaten çalışıyor. İlgili uygulamayı kapatın veya kalan işlemi sonlandırıp yeniden deneyin. Sorun devam ederse bilgisayarı yeniden başlatın.'
 launchGuard:
@@ -61,6 +61,7 @@ launchGuard:
   ok: Tamam
 tray:
   dashboard: Gösterge Paneli
+  quickPanel: Quick Panel
   ruleMode: Kural Modu
   globalMode: Küresel Mod
   directMode: Doğrudan Mod
@@ -85,7 +86,7 @@ tray:
   coreLog: Çekirdek Günlüğü
   restartClash: Clash Çekirdeğini Yeniden Başlat
   restartApp: Uygulamayı Yeniden Başlat
-  vergeVersion: Verge Sürümü
+  vergeVersion: Moclash Sürümü
   more: Daha Fazla
   exit: Çıkış
   tooltip:

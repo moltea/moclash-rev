@@ -125,6 +125,7 @@ export const commands = {
   getClashLogs: () => __TAURI_INVOKE<string[]>('get_clash_logs'),
   /**  获取Verge配置 */
   getVergeConfig: () => __TAURI_INVOKE<IVerge_Serialize>('get_verge_config'),
+  getDeviceHwid: () => __TAURI_INVOKE<string>('get_device_hwid'),
   /**  修改Verge配置 */
   patchVergeConfig: (payload: IVerge_Deserialize) =>
     __TAURI_INVOKE<null>('patch_verge_config', { payload }),
@@ -135,6 +136,7 @@ export const commands = {
   downloadIconCache: (url: string, name: string) =>
     __TAURI_INVOKE<string>('download_icon_cache', { url, name }),
   openDevtools: () => __TAURI_INVOKE<void>('open_devtools'),
+  showMainWindow: () => __TAURI_INVOKE<void>('show_main_window'),
   exitApp: () => __TAURI_INVOKE<void>('exit_app'),
   getNetworkInterfacesInfo: () =>
     __TAURI_INVOKE<NetworkInterfaceView[]>('get_network_interfaces_info'),
@@ -432,6 +434,8 @@ export type IVerge_Deserialize = {
   /**  代理页面自动滚动延迟（毫秒） */
   hover_jump_navigator_delay?: number | null
   enable_external_controller?: boolean | null
+  enable_send_hwid?: boolean | null
+  custom_hwid?: string | null
   tray_icon?: string | null
   verge_redir_port?: number | null
   verge_redir_enabled?: boolean | null
@@ -522,6 +526,8 @@ export type IVerge_Serialize = {
   /**  代理页面自动滚动延迟（毫秒） */
   hover_jump_navigator_delay: number | null
   enable_external_controller: boolean | null
+  enable_send_hwid: boolean | null
+  custom_hwid: string | null
   tray_icon?: string | null
   verge_redir_port?: number | null
   verge_redir_enabled?: boolean | null

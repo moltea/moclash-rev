@@ -19,20 +19,18 @@ pub(crate) fn report_error(error: &anyhow::Error) {
     });
     let message = match log_result {
         Ok(path) => format!(
-            "Clash Verge could not start.\n\n{detail}\n\nDiagnostic log:\n{}",
+            "Moclash could not start.\n\n{detail}\n\nDiagnostic log:\n{}",
             path.display()
         ),
         Err(log_error) => {
             eprintln!("[clash-verge] failed to write startup log: {log_error:#}");
-            format!(
-                "Clash Verge could not start.\n\n{detail}\n\nThe diagnostic log could not be written:\n{log_error:#}"
-            )
+            format!("Moclash could not start.\n\n{detail}\n\nThe diagnostic log could not be written:\n{log_error:#}")
         }
     };
 
     let _ = rfd::MessageDialog::new()
         .set_level(rfd::MessageLevel::Error)
-        .set_title("Clash Verge startup failed")
+        .set_title("Moclash startup failed")
         .set_description(message)
         .set_buttons(rfd::MessageButtons::Ok)
         .show();

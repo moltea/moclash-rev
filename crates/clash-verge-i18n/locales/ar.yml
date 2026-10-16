@@ -12,10 +12,10 @@ notifications:
     'off': System proxy has been disabled.
   systemProxyFailed:
     title: وكيل النظام
-    body: تعذّر ضبط وكيل النظام. افتح Clash Verge لمعرفة السبب.
+    body: تعذّر ضبط وكيل النظام. افتح Moclash لمعرفة السبب.
   systemProxyGuardStopped:
     title: حارس وكيل النظام
-    body: توقف بعد عدة إخفاقات متتالية. افتح Clash Verge لمعرفة السبب.
+    body: توقف بعد عدة إخفاقات متتالية. افتح Moclash لمعرفة السبب.
   tunModeToggled:
     title: وضع TUN
     'on': TUN mode has been enabled.
@@ -28,15 +28,15 @@ notifications:
     body: تمت إعادة تفعيل الملف التعريفي.
   appQuit:
     title: على وشك الخروج
-    body: Clash Verge على وشك الخروج.
+    body: Moclash على وشك الخروج.
   updateReady:
-    title: Clash Verge Update
+    title: Moclash Update
     body: A new version (v{version}) has been downloaded and is ready to install.
     installNow: Install Now
     later: Later
 service:
-  adminInstallPrompt: يتطلب تثبيت خدمة Clash Verge صلاحيات المسؤول.
-  adminUninstallPrompt: يتطلب إلغاء تثبيت خدمة Clash Verge صلاحيات المسؤول.
+  adminInstallPrompt: يتطلب تثبيت خدمة Moclash صلاحيات المسؤول.
+  adminUninstallPrompt: يتطلب إلغاء تثبيت خدمة Moclash صلاحيات المسؤول.
 core:
   alreadyRunning: 'تعذّر بدء النواة: توجد عملية نواة قيد التشغيل بالفعل. أغلق التطبيق المعني أو أنهِ العملية المتبقية، ثم أعد المحاولة. إذا استمرت المشكلة، فأعد تشغيل الكمبيوتر.'
 launchGuard:
@@ -61,6 +61,7 @@ launchGuard:
   ok: موافق
 tray:
   dashboard: لوحة التحكم
+  quickPanel: Quick Panel
   ruleMode: وضع القواعد
   globalMode: الوضع العام
   directMode: الوضع المباشر
@@ -85,7 +86,7 @@ tray:
   coreLog: سجل النواة
   restartClash: إعادة تشغيل نواة Clash
   restartApp: إعادة تشغيل التطبيق
-  vergeVersion: إصدار Verge
+  vergeVersion: إصدار Moclash
   more: المزيد
   exit: خروج
   tooltip:

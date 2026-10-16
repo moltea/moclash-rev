@@ -160,12 +160,12 @@ impl NetworkManager {
         url: &str,
         proxy_type: ProxyType,
         timeout_secs: Option<u64>,
-        user_agent: Option<String>,
         accept_invalid_certs: bool,
         tls_root_mode: TlsRootMode,
+        headers: &HeaderMap,
     ) -> Result<HttpResponse> {
         let mut parsed = Url::parse(url)?;
-        let mut extra_headers = HeaderMap::new();
+        let mut extra_headers = headers.clone();
 
         if !parsed.username().is_empty() {
             let username = percent_encoding::percent_decode_str(parsed.username())
@@ -184,13 +184,7 @@ impl NetworkManager {
 
         // 创建请求
         let client = self
-            .create_request_with_tls_mode(
-                proxy_type,
-                timeout_secs,
-                user_agent,
-                accept_invalid_certs,
-                tls_root_mode,
-            )
+            .create_request_with_tls_mode(proxy_type, timeout_secs, None, accept_invalid_certs, tls_root_mode)
             .await?;
 
         let mut request_builder = client.get(parsed);
@@ -264,14 +258,39 @@ impl NetworkManager {
         user_agent: Option<String>,
         accept_invalid_certs: bool,
     ) -> Result<HttpResponse> {
+        self.get_with_headers(
+            url,
+            proxy_type,
+            timeout_secs,
+            user_agent,
+            accept_invalid_certs,
+            &HeaderMap::new(),
+        )
+        .await
+    }
+
+    pub async fn get_with_headers(
+        &self,
+        url: &str,
+        proxy_type: ProxyType,
+        timeout_secs: Option<u64>,
+        user_agent: Option<String>,
+        accept_invalid_certs: bool,
+        headers: &HeaderMap,
+    ) -> Result<HttpResponse> {
+        let mut headers = headers.clone();
+        if let Some(ua) = user_agent {
+            headers.insert(USER_AGENT, HeaderValue::from_str(ua.as_str())?);
+        }
+
         let platform_result = self
             .get_with_tls_mode(
                 url,
                 proxy_type,
                 timeout_secs,
-                user_agent.clone(),
                 accept_invalid_certs,
                 TlsRootMode::PlatformVerifier,
+                &headers,
             )
             .await;
 
@@ -282,9 +301,9 @@ impl NetworkManager {
                     url,
                     proxy_type,
                     timeout_secs,
-                    user_agent,
                     accept_invalid_certs,
                     TlsRootMode::StaticWebpkiRoots,
+                    &headers,
                 )
                 .await
                 .map_err(|fallback_err| {

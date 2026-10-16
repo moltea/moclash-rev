@@ -152,18 +152,38 @@
           }
         }
       }
+    },
+    "hwid": {
+      "title": "Device Identification",
+      "fields": {
+        "sendHwid": "Send HWID",
+        "deviceHwid": "Device HWID",
+        "customHwid": "Custom HWID"
+      },
+      "tooltips": {
+        "sendHwid": "Send the x-hwid, x-device-os, x-ver-os and x-device-model headers when downloading subscriptions (Remnawave/Happ compatible)",
+        "customHwid": "Leave empty to use the HWID generated for this device"
+      },
+      "placeholders": {
+        "customHwid": "10–64 characters: A-Z a-z 0-9 = -"
+      },
+      "messages": {
+        "invalidHwid": "HWID must be 10–64 characters of Latin letters, digits, = or -",
+        "hwidCopied": "HWID copied to clipboard"
+      }
     }
   },
   "components": {
     "verge": {
       "basic": {
-        "title": "تنظیمات پایه Verge",
+        "title": "تنظیمات پایه Moclash",
         "actions": {
           "browse": "مرور کردن"
         },
         "trayOptions": {
           "showMainWindow": "نمایش پنجره اصلی",
           "showTrayMenu": "Show Tray Menu",
+          "showQuickPanel": "Show Quick Panel",
           "disable": "غیرفعال کردن"
         },
         "fields": {
@@ -180,7 +200,7 @@
         }
       },
       "advanced": {
-        "title": "تنظیمات پیشرفته Verge",
+        "title": "تنظیمات پیشرفته Moclash",
         "tooltips": {
           "backupInfo": "از فایل های پیکربندی پشتیبان WebDAV پشتیبانی می کند",
           "openConfDir": "اگر نرم‌افزار به‌طور غیرعادی اجرا می‌شود، از تمام فایل‌های موجود در این پوشه نسخه پشتیبان تهیه و پاک کنید تا نرم‌افزار را مجدداً راه‌اندازی کنید",
@@ -204,7 +224,7 @@
           "liteModeSettings": "LightWeight Mode Settings",
           "exit": "خروج",
           "exportDiagnostics": "Export Diagnostic Info",
-          "vergeVersion": "نسخه Verge"
+          "vergeVersion": "نسخه Moclash"
         }
       },
       "theme": {
@@ -670,11 +690,11 @@
         "coreAlreadyRunning": "هسته شروع نمی‌شود: یک فرایند هسته از قبل در حال اجراست. برنامه مرتبط را ببندید یا فرایند باقی‌مانده را متوقف کنید و دوباره تلاش کنید. اگر مشکل ادامه داشت، رایانه را راه‌اندازی مجدد کنید."
       },
       "sysproxy": {
-        "privilegeRequired": "تنظیم پراکسی سیستم ممکن نیست: macOS به دلیل نداشتن دسترسی، این تغییر را رد کرد. سرویس Clash Verge را نصب کنید؛ اگر مدیر هستید می‌توانید در گزینه‌های پیشرفتهٔ تنظیمات سیستم ← حریم خصوصی و امنیت، الزام رمز مدیر برای تنظیمات سراسری سیستم را نیز خاموش کنید.",
+        "privilegeRequired": "تنظیم پراکسی سیستم ممکن نیست: macOS به دلیل نداشتن دسترسی، این تغییر را رد کرد. سرویس Moclash را نصب کنید؛ اگر مدیر هستید می‌توانید در گزینه‌های پیشرفتهٔ تنظیمات سیستم ← حریم خصوصی و امنیت، الزام رمز مدیر برای تنظیمات سراسری سیستم را نیز خاموش کنید.",
         "directFallback": "تنظیم پراکسی سیستم ناموفق بود؛ ترافیک به اتصال مستقیم بازگردانده شد.",
         "guardStopped": "نگهبان پراکسی سیستم پس از چند شکست پیاپی متوقف شد. پراکسی سیستم دیگر به‌طور خودکار نگه داشته نمی‌شود.",
-        "sidecarWhileServiceReady": "تنظیم پراکسی سیستم ممکن نشد: سرویس Clash Verge آماده است اما هسته هنوز به‌صورت Sidecar اجرا می‌شود. برای رفتن به حالت سرویس، هسته را دوباره راه‌اندازی کنید.",
-        "coreNotReady": "فعال‌سازی پراکسی سیستم ممکن نشد: هسته در حال اجرا نیست. ابتدا هسته را اجرا کنید (یا سرویس Clash Verge را نصب/تعمیر کنید) و دوباره تلاش کنید.",
+        "sidecarWhileServiceReady": "تنظیم پراکسی سیستم ممکن نشد: سرویس Moclash آماده است اما هسته هنوز به‌صورت Sidecar اجرا می‌شود. برای رفتن به حالت سرویس، هسته را دوباره راه‌اندازی کنید.",
+        "coreNotReady": "فعال‌سازی پراکسی سیستم ممکن نشد: هسته در حال اجرا نیست. ابتدا هسته را اجرا کنید (یا سرویس Moclash را نصب/تعمیر کنید) و دوباره تلاش کنید.",
         "systemCallFailed": "نوشتن پراکسی سیستم ناموفق بود: یک فراخوانی سیستمی ویندوز شکست خورد. این معمولاً گذراست؛ دوباره تلاش کنید."
       }
     },

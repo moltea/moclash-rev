@@ -215,6 +215,16 @@ export interface TranslationResources {
             unlock: string
           }
         }
+        quickPanel: {
+          coreNotRunning: string
+          coreNotRunningDescription: string
+          noProfile: string
+          noProfileDescription: string
+          noProxies: string
+          openDashboard: string
+          profile: string
+          quit: string
+        }
         serviceMigration: {
           checkingMessage: string
           continueSidecar: string
@@ -739,6 +749,7 @@ export interface TranslationResources {
             trayOptions: {
               disable: string
               showMainWindow: string
+              showQuickPanel: string
               showTrayMenu: string
             }
           }
@@ -1349,6 +1360,25 @@ export interface TranslationResources {
           title: string
           tooltips: {
             open: string
+          }
+        }
+        hwid: {
+          fields: {
+            customHwid: string
+            deviceHwid: string
+            sendHwid: string
+          }
+          messages: {
+            hwidCopied: string
+            invalidHwid: string
+          }
+          placeholders: {
+            customHwid: string
+          }
+          title: string
+          tooltips: {
+            customHwid: string
+            sendHwid: string
           }
         }
         proxyControl: {

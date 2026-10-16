@@ -12,10 +12,10 @@ notifications:
     'off': System proxy has been disabled.
   systemProxyFailed:
     title: 시스템 프록시
-    body: 시스템 프록시를 설정하지 못했습니다. 이유는 Clash Verge를 열어 확인하십시오.
+    body: 시스템 프록시를 설정하지 못했습니다. 이유는 Moclash를 열어 확인하십시오.
   systemProxyGuardStopped:
     title: 시스템 프록시 가드
-    body: 연속으로 실패하여 중지되었습니다. 이유는 Clash Verge를 열어 확인하십시오.
+    body: 연속으로 실패하여 중지되었습니다. 이유는 Moclash를 열어 확인하십시오.
   tunModeToggled:
     title: TUN 모드
     'on': TUN mode has been enabled.
@@ -28,15 +28,15 @@ notifications:
     body: 프로필이 다시 활성화되었습니다.
   appQuit:
     title: 곧 종료
-    body: Clash Verge가 곧 종료됩니다.
+    body: Moclash가 곧 종료됩니다.
   updateReady:
-    title: Clash Verge Update
+    title: Moclash Update
     body: A new version (v{version}) has been downloaded and is ready to install.
     installNow: Install Now
     later: Later
 service:
-  adminInstallPrompt: Clash Verge 서비스 설치에는 관리자 권한이 필요합니다.
-  adminUninstallPrompt: Clash Verge 서비스 제거에는 관리자 권한이 필요합니다.
+  adminInstallPrompt: Moclash 서비스 설치에는 관리자 권한이 필요합니다.
+  adminUninstallPrompt: Moclash 서비스 제거에는 관리자 권한이 필요합니다.
 core:
   alreadyRunning: 코어를 시작할 수 없습니다. 이미 실행 중인 코어 프로세스가 있습니다. 관련 앱이나 남아 있는 프로세스를 종료한 뒤 다시 시도하세요. 문제가 계속되면 컴퓨터를 다시 시작하세요.
 launchGuard:
@@ -61,6 +61,7 @@ launchGuard:
   ok: 확인
 tray:
   dashboard: 대시보드
+  quickPanel: Quick Panel
   ruleMode: 규칙 모드
   globalMode: 전역 모드
   directMode: 직접 모드
@@ -85,7 +86,7 @@ tray:
   coreLog: 코어 로그
   restartClash: Clash 코어 재시작
   restartApp: 애플리케이션 재시작
-  vergeVersion: Verge 버전
+  vergeVersion: Moclash 버전
   more: 더 보기
   exit: 종료
   tooltip:

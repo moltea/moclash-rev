@@ -12,10 +12,10 @@ notifications:
     'off': Системный прокси отключён.
   systemProxyFailed:
     title: Системный прокси
-    body: Не удалось настроить системный прокси. Откройте Clash Verge, чтобы узнать причину.
+    body: Не удалось настроить системный прокси. Откройте Moclash, чтобы узнать причину.
   systemProxyGuardStopped:
     title: Страж системного прокси
-    body: Остановлен после нескольких неудач подряд. Откройте Clash Verge, чтобы узнать причину.
+    body: Остановлен после нескольких неудач подряд. Откройте Moclash, чтобы узнать причину.
   tunModeToggled:
     title: Режим TUN
     'on': Режим TUN включён.
@@ -28,15 +28,15 @@ notifications:
     body: Профиль повторно активирован.
   appQuit:
     title: Скорый выход
-    body: Clash Verge скоро завершит работу.
+    body: Moclash скоро завершит работу.
   updateReady:
-    title: Обновление Clash Verge
+    title: Обновление Moclash
     body: Новая версия (v{version}) скачана и готова к установке.
     installNow: Установить сейчас
     later: Позже
 service:
-  adminInstallPrompt: Для установки службы Clash Verge требуются права администратора.
-  adminUninstallPrompt: Для удаления службы Clash Verge требуются права администратора.
+  adminInstallPrompt: Для установки службы Moclash требуются права администратора.
+  adminUninstallPrompt: Для удаления службы Moclash требуются права администратора.
 core:
   alreadyRunning: 'Не удалось запустить ядро: процесс ядра уже работает. Закройте соответствующее приложение или завершите оставшийся процесс и повторите попытку. Если проблема сохраняется, перезагрузите компьютер.'
 launchGuard:
@@ -61,6 +61,7 @@ launchGuard:
   ok: ОК
 tray:
   dashboard: Панель
+  quickPanel: Быстрая панель
   ruleMode: Режим правил
   globalMode: Глобальный режим
   directMode: Прямой режим
@@ -85,7 +86,7 @@ tray:
   coreLog: Журнал ядра
   restartClash: Перезапустить ядро Clash
   restartApp: Перезапустить приложение
-  vergeVersion: Версия Verge
+  vergeVersion: Версия Moclash
   more: Еще
   exit: Выход
   tooltip:

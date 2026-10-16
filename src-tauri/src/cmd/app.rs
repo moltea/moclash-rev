@@ -1,9 +1,9 @@
 use super::CmdResult;
 use crate::{
     cmd::StringifyErr as _,
-    core::{SilentUpdater, updater::DownloadEvent},
+    core::{SilentUpdater, lightweight, updater::DownloadEvent},
     feat,
-    utils::dirs,
+    utils::{dirs, window_manager::WindowManager},
 };
 use smartstring::alias::String;
 use tauri::{AppHandle, Manager as _, ipc::Channel};
@@ -39,6 +39,14 @@ pub fn open_devtools(app_handle: AppHandle) {
         } else {
             window.close_devtools();
         }
+    }
+}
+
+#[tauri::command]
+#[specta::specta]
+pub async fn show_main_window() {
+    if !lightweight::exit_lightweight_mode().await {
+        WindowManager::show_main_window().await;
     }
 }
 

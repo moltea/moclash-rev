@@ -152,18 +152,38 @@
           }
         }
       }
+    },
+    "hwid": {
+      "title": "Device Identification",
+      "fields": {
+        "sendHwid": "Send HWID",
+        "deviceHwid": "Device HWID",
+        "customHwid": "Custom HWID"
+      },
+      "tooltips": {
+        "sendHwid": "Send the x-hwid, x-device-os, x-ver-os and x-device-model headers when downloading subscriptions (Remnawave/Happ compatible)",
+        "customHwid": "Leave empty to use the HWID generated for this device"
+      },
+      "placeholders": {
+        "customHwid": "10–64 characters: A-Z a-z 0-9 = -"
+      },
+      "messages": {
+        "invalidHwid": "HWID must be 10–64 characters of Latin letters, digits, = or -",
+        "hwidCopied": "HWID copied to clipboard"
+      }
     }
   },
   "components": {
     "verge": {
       "basic": {
-        "title": "Verge Төп көйләүләр",
+        "title": "Moclash Төп көйләүләр",
         "actions": {
           "browse": "Карау"
         },
         "trayOptions": {
           "showMainWindow": "Төп тәрәзәне күрсәтү",
           "showTrayMenu": "Show Tray Menu",
+          "showQuickPanel": "Show Quick Panel",
           "disable": "Сүндерү"
         },
         "fields": {
@@ -180,7 +200,7 @@
         }
       },
       "advanced": {
-        "title": "Verge Киңәйтелгән көйләүләр",
+        "title": "Moclash Киңәйтелгән көйләүләр",
         "tooltips": {
           "backupInfo": "WebDAV аша конфигурация файлын саклауны хуплый",
           "openConfDir": "Әгәр программада хаталар чыкса, бу папкадагы файлларны саклап калыгыз да, аннары барысын да бетереп, программаны яңадан башлагыз",
@@ -204,7 +224,7 @@
           "liteModeSettings": "LightWeight Mode Settings",
           "exit": "Чыгу",
           "exportDiagnostics": "Export Diagnostic Info",
-          "vergeVersion": "Verge версиясе"
+          "vergeVersion": "Moclash версиясе"
         }
       },
       "theme": {
@@ -670,11 +690,11 @@
         "coreAlreadyRunning": "Төшне башлап булмый: төш процессы инде эшли. Тиешле кушымтаны ябыгыз яки калган процессны тәмамлагыз һәм яңадан сынап карагыз. Проблема хәл ителмәсә, санакны яңадан кабызыгыз."
       },
       "sysproxy": {
-        "privilegeRequired": "Система проксиен көйләп булмый: хокуклар җитмәгәнгә күрә macOS бу үзгәрешне кире какты. Clash Verge хезмәтен урнаштырыгыз; әгәр сез администратор булсагыз, Система көйләнмәләре → Шәхсилек вә иминлек бүлегенең өстәмә параметрларында, система дәрәҗәсендәге көйләнмәләр өчен администратор паролен таләп итүне сүндерә аласыз.",
+        "privilegeRequired": "Система проксиен көйләп булмый: хокуклар җитмәгәнгә күрә macOS бу үзгәрешне кире какты. Moclash хезмәтен урнаштырыгыз; әгәр сез администратор булсагыз, Система көйләнмәләре → Шәхсилек вә иминлек бүлегенең өстәмә параметрларында, система дәрәҗәсендәге көйләнмәләр өчен администратор паролен таләп итүне сүндерә аласыз.",
         "directFallback": "Система проксиен көйләү уңышсыз булды; трафик туры тоташуга кайтарылды.",
         "guardStopped": "Система проксие сакчысы берничә тапкыр рәттән уңышсыз булганнан соң туктады. Система проксие бүтән автоматик рәвештә саклап торылмый.",
-        "sidecarWhileServiceReady": "Система проксиен көйләп булмады: Clash Verge хезмәте әзер, әмма ядро һаман Sidecar буларак эшли. Хезмәт режимына күчәр өчен ядрону яңадан эшләтегез.",
-        "coreNotReady": "Система проксиен кабызып булмады: ядро эшләми. Ядрону җибәрегез (яки Clash Verge хезмәтен урнаштырыгыз/төзәтегез) һәм тагын бер тапкыр карагыз.",
+        "sidecarWhileServiceReady": "Система проксиен көйләп булмады: Moclash хезмәте әзер, әмма ядро һаман Sidecar буларак эшли. Хезмәт режимына күчәр өчен ядрону яңадан эшләтегез.",
+        "coreNotReady": "Система проксиен кабызып булмады: ядро эшләми. Ядрону җибәрегез (яки Moclash хезмәтен урнаштырыгыз/төзәтегез) һәм тагын бер тапкыр карагыз.",
         "systemCallFailed": "Система проксиен язып булмады: Windows система чакыруы уңышсыз тәмамланды. Гадәттә бу вакытлыча, тагын бер тапкыр карагыз."
       }
     },

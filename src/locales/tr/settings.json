@@ -152,18 +152,38 @@
           }
         }
       }
+    },
+    "hwid": {
+      "title": "Device Identification",
+      "fields": {
+        "sendHwid": "Send HWID",
+        "deviceHwid": "Device HWID",
+        "customHwid": "Custom HWID"
+      },
+      "tooltips": {
+        "sendHwid": "Send the x-hwid, x-device-os, x-ver-os and x-device-model headers when downloading subscriptions (Remnawave/Happ compatible)",
+        "customHwid": "Leave empty to use the HWID generated for this device"
+      },
+      "placeholders": {
+        "customHwid": "10–64 characters: A-Z a-z 0-9 = -"
+      },
+      "messages": {
+        "invalidHwid": "HWID must be 10–64 characters of Latin letters, digits, = or -",
+        "hwidCopied": "HWID copied to clipboard"
+      }
     }
   },
   "components": {
     "verge": {
       "basic": {
-        "title": "Verge Temel Ayarı",
+        "title": "Moclash Temel Ayarı",
         "actions": {
           "browse": "Gözat"
         },
         "trayOptions": {
           "showMainWindow": "Ana Pencereyi Göster",
           "showTrayMenu": "Tepsi Menüsünü Göster",
+          "showQuickPanel": "Show Quick Panel",
           "disable": "Devre Dışı Bırak"
         },
         "fields": {
@@ -180,7 +200,7 @@
         }
       },
       "advanced": {
-        "title": "Verge Gelişmiş Ayarı",
+        "title": "Moclash Gelişmiş Ayarı",
         "tooltips": {
           "backupInfo": "WebDAV yedekleme yapılandırma dosyalarını destekler",
           "openConfDir": "Yazılım anormal çalışıyorsa, bu klasördeki tüm dosyaları YEDEKLEYİN ve silin, ardından yazılımı yeniden başlatın",
@@ -204,7 +224,7 @@
           "liteModeSettings": "Hafif Mod Ayarları",
           "exit": "Çıkış",
           "exportDiagnostics": "Tanılama Bilgilerini Dışa Aktar",
-          "vergeVersion": "Verge Sürümü"
+          "vergeVersion": "Moclash Sürümü"
         }
       },
       "theme": {
@@ -670,11 +690,11 @@
         "coreAlreadyRunning": "Çekirdek başlatılamıyor: bir çekirdek işlemi zaten çalışıyor. İlgili uygulamayı kapatın veya kalan işlemi sonlandırıp yeniden deneyin. Sorun devam ederse bilgisayarı yeniden başlatın."
       },
       "sysproxy": {
-        "privilegeRequired": "Sistem vekil sunucusu ayarlanamıyor: macOS yetki yetersizliği nedeniyle değişikliği reddetti. Clash Verge hizmetini kurun; yöneticiyseniz Sistem Ayarları → Gizlilik ve Güvenlik bölümündeki gelişmiş seçeneklerden, sistem genelindeki ayarlar için yönetici parolası zorunluluğunu da kapatabilirsiniz.",
+        "privilegeRequired": "Sistem vekil sunucusu ayarlanamıyor: macOS yetki yetersizliği nedeniyle değişikliği reddetti. Moclash hizmetini kurun; yöneticiyseniz Sistem Ayarları → Gizlilik ve Güvenlik bölümündeki gelişmiş seçeneklerden, sistem genelindeki ayarlar için yönetici parolası zorunluluğunu da kapatabilirsiniz.",
         "directFallback": "Sistem vekil sunucusu ayarlanamadı; trafik doğrudan bağlantıya geri döndürüldü.",
         "guardStopped": "Sistem vekil sunucusu koruması art arda birkaç başarısızlıktan sonra durdu. Sistem vekil sunucusu artık otomatik olarak korunmuyor.",
-        "sidecarWhileServiceReady": "Sistem vekil sunucusu ayarlanamadı: Clash Verge hizmeti hazır ancak çekirdek hâlâ Sidecar olarak çalışıyor. Hizmet moduna geçmek için çekirdeği yeniden başlatın.",
-        "coreNotReady": "Çekirdek çalışmadığı için sistem vekil sunucusu etkinleştirilemedi. Çekirdeği başlatın (veya Clash Verge hizmetini kurun/onarın) ve yeniden deneyin.",
+        "sidecarWhileServiceReady": "Sistem vekil sunucusu ayarlanamadı: Moclash hizmeti hazır ancak çekirdek hâlâ Sidecar olarak çalışıyor. Hizmet moduna geçmek için çekirdeği yeniden başlatın.",
+        "coreNotReady": "Çekirdek çalışmadığı için sistem vekil sunucusu etkinleştirilemedi. Çekirdeği başlatın (veya Moclash hizmetini kurun/onarın) ve yeniden deneyin.",
         "systemCallFailed": "Bir Windows sistem çağrısı başarısız olduğu için sistem vekil sunucusu yazılamadı. Bu genellikle geçicidir, yeniden deneyin."
       }
     },

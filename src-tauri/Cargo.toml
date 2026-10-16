@@ -1,7 +1,7 @@
 [package]
 name = "clash-verge"
 version = "2.5.9"
-description = "clash verge"
+description = "Moclash"
 authors = ["zzzgydi", "Tunglies", "wonfen", "MystiPanda"]
 license = "GPL-3.0-only"
 repository = "https://github.com/clash-verge-rev/clash-verge-rev.git"
@@ -26,7 +26,7 @@ clippy = ["tauri/test"]
 perf-harness = ["dep:tauri-plugin-wdio-webdriver"]
 
 [package.metadata.bundle]
-identifier = "io.github.clash-verge-rev.clash-verge-rev"
+identifier = "io.github.moltea.moclash"
 
 [build-dependencies]
 tauri-build = { version = "2.7.1", features = [] }

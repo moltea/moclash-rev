@@ -271,7 +271,7 @@ pub fn run() -> std::process::ExitCode {
 
             #[cfg(target_os = "macos")]
             if let Some(window) = _app_handle.get_webview_window("main") {
-                let _ = window.set_title("Clash Verge");
+                let _ = window.set_title("Moclash");
             }
         }
 
@@ -282,7 +282,8 @@ pub fn run() -> std::process::ExitCode {
                 return;
             }
 
-            if !has_visible_windows {
+            if !has_visible_windows || !WindowManager::is_main_window_visible(WindowManager::get_main_window().as_ref())
+            {
                 handle::Handle::global().set_activation_policy_regular();
                 let _ = WindowManager::show_main_window().await;
             }
@@ -404,7 +405,10 @@ pub fn run() -> std::process::ExitCode {
         }
         #[allow(unused_variables)]
         tauri::RunEvent::ExitRequested { api, code, .. } => {
-            if core::lightweight::is_in_lightweight_mode() && !handle::Handle::global().is_exiting() {
+            let quick_panel_closed = code.is_none() && core::tray::quick_panel::take_destroyed_as_last_window();
+            if (quick_panel_closed || core::lightweight::is_in_lightweight_mode())
+                && !handle::Handle::global().is_exiting()
+            {
                 api.prevent_exit();
             } else if code.is_none() {
                 api.prevent_exit();
@@ -433,6 +437,9 @@ pub fn run() -> std::process::ExitCode {
             }
             _ => {}
         },
+        tauri::RunEvent::WindowEvent { label, event, .. } if label == core::tray::quick_panel::QUICK_PANEL_LABEL => {
+            core::tray::quick_panel::handle_window_event(&event);
+        }
         _ => {}
     });
     std::process::ExitCode::SUCCESS
