@@ -1,15 +1,14 @@
 # Privacy Policy
 
-**Applies to:** the Clash Verge Rev desktop application for Windows, macOS and
-Linux, distributed from
-<https://github.com/clash-verge-rev/clash-verge-rev/releases>.
+**Applies to:** the Moclash desktop application for Windows, macOS and Linux,
+distributed from <https://github.com/moltea/moclash-rev/releases>.
 
-**Last updated:** 2026-09-09
+**Last updated:** 2026-10-16
 
-Clash Verge Rev is a free and open-source graphical client for the
-[mihomo](https://github.com/MetaCubeX/mihomo) proxy core, maintained by
-volunteers. The project has no company behind it, no user accounts, and no
-server of its own that the application talks to.
+Moclash is a free and open-source graphical client for the
+[mihomo](https://github.com/MetaCubeX/mihomo) proxy core. The project has no
+company behind it, no user accounts, and no server of its own that the
+application talks to.
 
 ## 1. Summary
 
@@ -23,6 +22,9 @@ server of its own that the application talks to.
 - The application connects only to endpoints that you configure (proxy servers,
   subscription URLs, backup server) or to the third-party services listed in
   Section 4. None of them are operated by this project.
+- If you turn on **Send HWID** (off by default), a hashed device identifier and
+  your OS name, OS version and device model are sent to your own subscription
+  provider when subscriptions are downloaded (Section 4.2).
 - Two connections are enabled by default and are not part of your own proxy
   configuration: the **application update check** (Section 4.3) and the **IP
   information card** on the Home page (Section 4.5). Both are described below,
@@ -30,8 +32,8 @@ server of its own that the application talks to.
 
 ## 2. Who is responsible
 
-The Clash Verge Rev maintainers, reachable through the project's issue tracker
-at <https://github.com/clash-verge-rev/clash-verge-rev/issues>. Because the
+The Moclash maintainers, reachable through the project's issue tracker at
+<https://github.com/moltea/moclash-rev/issues>. Because the
 application performs no data collection, there is no data controller
 relationship, no processing agreement, and no data to request or erase from us.
 
@@ -41,9 +43,9 @@ All application data lives in a single directory:
 
 | Platform | Location |
 | --- | --- |
-| Windows | `%APPDATA%\io.github.clash-verge-rev.clash-verge-rev` |
-| macOS | `~/Library/Application Support/io.github.clash-verge-rev.clash-verge-rev` |
-| Linux | `$XDG_DATA_HOME/io.github.clash-verge-rev.clash-verge-rev` (usually `~/.local/share/…`) |
+| Windows | `%APPDATA%\io.github.moltea.moclash` |
+| macOS | `~/Library/Application Support/io.github.moltea.moclash` |
+| Linux | `$XDG_DATA_HOME/io.github.moltea.moclash` (usually `~/.local/share/…`) |
 
 It contains:
 
@@ -90,13 +92,26 @@ your IP address and this request; it is the same request your browser would
 make. Requests can be sent directly, through the system proxy, or through the
 application's own proxy port, as configured per profile.
 
+If you enable the **Send HWID** setting (off by default), each subscription
+download additionally carries these headers, which are sent only to the
+subscription URL and nowhere else:
+
+- `x-hwid` — a device identifier: the operating system's machine ID (Windows
+  `MachineGuid`, macOS `IOPlatformUUID`, Linux `machine-id`; the host name if
+  none is available), hashed with SHA-256 and shortened to 16 hex characters,
+  or the custom HWID you entered instead. The raw machine ID is never sent.
+- `x-device-os`, `x-ver-os`, `x-device-model` — the operating system name, its
+  version, and the device model reported by the operating system.
+
+Providers that enforce device limits (for example Remnawave panels) use these
+values to count your devices. The identifier is stable across application
+reinstalls on the same system, so the provider can recognize the device;
+disable the setting or set a custom HWID if you do not want that.
+
 ### 4.3 Application update check — *enabled by default*
 
-On startup the application asks whether a newer release exists, in order, from:
-
-- `https://update.hwdns.net/…` and `https://gh-proxy.org/…` (third-party GitHub
-  mirrors, used for reachability in restricted networks)
-- `https://github.com/clash-verge-rev/clash-verge-rev/releases/…`
+On startup the application asks GitHub whether a newer release exists, at
+`https://github.com/moltea/moclash-rev/releases/…`.
 
 The request carries only what any HTTP request carries: your IP address, the
 `User-Agent` and the requested file. No identifier is generated or sent, and no
@@ -184,6 +199,8 @@ policies:
 - *Settings → Miscellaneous → Auto Check Update* — turn off the update check.
 - *Settings → Miscellaneous → Auto Log Clean* — set log retention, or `Never Clean`.
 - Per-profile update interval — turn off automatic subscription refresh.
+- *Send HWID* — off by default; turn it off again, or set a custom HWID, to
+  control what device information subscription providers receive.
 - WebDAV backup is inactive until you enter server details, and can be cleared
   at any time.
 - The IP information card only queries while the Home page is visible
@@ -203,6 +220,5 @@ history. The date at the top reflects the most recent change.
 
 ## 9. Contact
 
-Open an issue at
-<https://github.com/clash-verge-rev/clash-verge-rev/issues>. Please do not
+Open an issue at <https://github.com/moltea/moclash-rev/issues>. Please do not
 include logs or configuration files containing credentials in public issues.

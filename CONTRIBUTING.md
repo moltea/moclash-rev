@@ -1,6 +1,6 @@
 # CONTRIBUTING
 
-Thank you for your interest in contributing to **Clash Verge Rev**! This guide provides instructions to help you set up your development environment and start contributing effectively.
+Thank you for your interest in contributing to **Moclash**! This guide provides instructions to help you set up your development environment and start contributing effectively.
 
 ## Internationalization (i18n)
 
@@ -86,6 +86,15 @@ pnpm dev:diff      # If an app instance already exists
 pnpm dev:tauri     # Run Tauri development mode
 ```
 
+The Tauri app uses the shadcn/ui interface in `ui/`. The original MUI interface
+in `src/` is kept as a fallback. To work on either web UI without the Tauri
+shell:
+
+```bash
+pnpm ui:dev        # New interface (ui/)
+pnpm web:dev       # Original interface (src/)
+```
+
 ### Build the Project
 
 Standard build:
@@ -140,12 +149,12 @@ Signed commits are required to verify authorship and ensure your contributions c
 
 ### Submitting Your Changes
 
-1. Fork the repository.
+1. Fork [moltea/moclash-rev](https://github.com/moltea/moclash-rev).
 
 2. Create a new branch for your feature or bug fix.
 
 3. Commit your changes with clear messages and make sure it's signed.
 
-4. Push your branch and submit a pull request.
+4. Push your branch and submit a pull request against the `dev` branch.
 
 We appreciate your contributions and look forward to your participation!

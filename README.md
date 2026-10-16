@@ -1,106 +1,115 @@
 <h1 align="center">
-  <img src="./src-tauri/icons/icon.png" alt="Clash" width="128" />
+  <img src="./src-tauri/icons/icon.png" alt="Moclash" width="128" />
   <br>
-  Continuation of <a href="https://github.com/zzzgydi/clash-verge">Clash Verge</a>
+  Moclash
   <br>
 </h1>
 
 <h3 align="center">
-A Clash Meta GUI based on <a href="https://github.com/tauri-apps/tauri">Tauri</a>.
+A desktop Mihomo (Clash.Meta) GUI built with <a href="https://github.com/tauri-apps/tauri">Tauri 2</a> and Rust.
 </h3>
-
-<p align="center">
-  Languages:
-  <a href="./docs/README_en.md">English</a> ·
-  <a href="./docs/README_es.md">Español</a> ·
-  <a href="./docs/README_fa.md">فارسی</a> ·
-  <a href="./docs/README_ja.md">日本語</a> ·
-  <a href="./docs/README_ko.md">한국어</a> ·
-  <a href="./docs/README_pt.md">Português</a> ·
-  <a href="./docs/README_ru.md">Русский</a> ·
-  <a href="./README.md">简体中文</a>
-</p>
 
 ## Preview
 
-| Dark                             | Light                             |
-| -------------------------------- | --------------------------------- |
-| ![预览](./docs/preview_dark.png) | ![预览](./docs/preview_light.png) |
+| Dark                                  | Light                                   |
+| ------------------------------------- | --------------------------------------- |
+| ![Dark theme](./docs/preview_dark.png) | ![Light theme](./docs/preview_light.png) |
 
 ## Install
 
-请到发布页面下载对应的安装包：[Release page](https://github.com/clash-verge-rev/clash-verge-rev/releases)<br>
-Go to the [Release page](https://github.com/clash-verge-rev/clash-verge-rev/releases) to download the corresponding installation package<br>
-Supports Windows (x64/x86), Linux (x64/arm64) and macOS 11+ (intel/apple).
-支持 Windows (x64/x86)、Linux (x64/arm64) 和 macOS 11+ (intel/apple)。
+Download the installer for your platform from the
+[Releases page](https://github.com/moltea/moclash-rev/releases). Windows
+(x64/arm64), macOS (Apple Silicon/Intel) and Linux (x64/arm64/armv7) are
+supported.
 
-#### 我应当怎样选择发行版
+| Channel | Description                                                                         | Link                                                                    |
+| :------ | :---------------------------------------------------------------------------------- | :---------------------------------------------------------------------- |
+| Stable  | Tagged releases, recommended for daily use.                                         | [Releases](https://github.com/moltea/moclash-rev/releases)              |
+| Nightly | "Moclash Nightly", rebuilt on every push to `dev`. Latest changes, may have bugs. | [Nightly](https://github.com/moltea/moclash-rev/releases/tag/autobuild) |
 
-| 版本        | 特征                                     | 链接                                                                                   |
-| :---------- | :--------------------------------------- | :------------------------------------------------------------------------------------- |
-| Stable      | 正式版，高可靠性，适合日常使用。         | [Release](https://github.com/clash-verge-rev/clash-verge-rev/releases)                 |
-| Alpha(废弃) | 测试发布流程。                           | [Alpha](https://github.com/clash-verge-rev/clash-verge-rev/releases/tag/alpha)         |
-| AutoBuild   | 滚动更新版，适合测试反馈，可能存在缺陷。 | [AutoBuild](https://github.com/clash-verge-rev/clash-verge-rev/releases/tag/autobuild) |
+Nightly assets:
 
-#### 安装说明和常见问题，请到 [文档页](https://clash-verge-rev.github.io/) 查看
+- **Windows:** x64 and arm64 setup installers, plus variants bundling a fixed
+  WebView2 runtime.
+- **macOS:** `.dmg` for Apple Silicon (aarch64) and Intel (x64).
+- **Linux:** `.deb` and `.rpm` for x64, arm64 and armv7.
 
-### TG 频道: [@clash_verge_rev](https://t.me/clash_verge_re)
+> [!NOTE]
+> Assets are named after the product name **Moclash** (for example
+> `Moclash_<version>_x64-setup.exe`, `Moclash_<version>_aarch64.dmg`,
+> `Moclash_<version>_amd64.deb`, `Moclash-<version>-1.x86_64.rpm`), and the
+> app is installed and shown as "Moclash".
 
----
+macOS builds may be unsigned. If macOS reports that the app is damaged or
+cannot be opened, clear the quarantine attribute:
 
-## Promotion
-
-### ✈️ [AI云边 -- 全新架构机场 ClaudeBorder](https://cruise.54678999.xyz/#/register?code=58q5UJZc)
-
-🔥热销中使用本链接注册即送 **3 天免费试用**，每日 **1GB 流量**：👉 [点此注册](https://cruise.54678999.xyz/#/register?code=58q5UJZc)
-
-#### AI云边 -- 全新架构机场。
-
-- 💻 多次**技术迭代后**全新亮相。
-- 🗺 全**高速稳定**正价节点。
-- 🌏 **海外团队**，不跑路
-- 🚀 线路**冗余**设计，**自动化运维**对抗各类封锁
-- 👨‍🦲 团队架构师为**大厂**网络架构师
-- 💰 极致**稳定**，亲民价**价格**
-- 🌐 全面支持**流媒体及各AI访问**
-- 🙋 7*12小时真人客服。解决您的各类问题。
-
-🌐 官网：👉 [https://www.claudeborder.com](https://cruise.54678999.xyz/#/register?code=58q5UJZc)
-
-### 🤖 [GPTKefu —— 与 Crisp 深度整合的 AI 智能客服平台](https://gptkefu.com)
-
-- 🧠 深度理解完整对话上下文 + 图片识别，自动给出专业、精准的回复，告别机械式客服。
-- ♾️ **不限回答数量**，无额度焦虑，区别于其他按条计费的 AI 客服产品。
-- 💬 售前咨询、售后服务、复杂问题解答，全场景轻松覆盖，真实用户案例已验证效果。
-- ⚡ 3 分钟极速接入，零门槛上手，即刻提升客服效率与客户满意度。
-- 🎁 高级套餐免费试用 14 天，先体验后付费：👉 [立即试用](https://gptkefu.com)
-- 📢 智能客服TG 频道：[@crisp_ai](https://t.me/crisp_ai)
-
----
+```shell
+xattr -cr "/Applications/Moclash.app"
+```
 
 ## Features
 
-- 基于性能强劲的 Rust 和 Tauri 2 框架
-- 内置[Clash.Meta(mihomo)](https://github.com/MetaCubeX/mihomo)内核，并支持切换 `Alpha` 版本内核。
-- 简洁美观的用户界面，支持自定义主题颜色、代理组/托盘图标以及 `CSS Injection`。
-- 配置文件管理和增强（Merge 和 Script），配置文件语法提示。
-- 系统代理和守卫、`TUN(虚拟网卡)` 模式。
-- 可视化节点和规则编辑
-- WebDav 配置备份和同步
+- Built on Rust and Tauri 2.
+- Bundled [Mihomo (Clash.Meta)](https://github.com/MetaCubeX/mihomo) core, with
+  optional switching to the `Alpha` core.
+- New interface built with [shadcn/ui](https://ui.shadcn.com) (Radix, Tailwind
+  CSS v4, lucide icons).
+- Profile management and enhancement (Merge and Script), with configuration
+  syntax hints.
+- Visual proxy, rule and proxy-group editors.
+- System proxy with guard, and `TUN` (virtual network adapter) mode.
+- WebDAV backup and sync.
+- Custom theme colors, proxy-group and tray icons, and `CSS Injection`.
+- Tray quick panel for switching the proxy mode and server without opening
+  the main window (see below), plus the tray menu and global hotkeys.
+- **Send HWID** for subscriptions that enforce device limits (see below).
 
-### FAQ
+## Tray quick panel
 
-Refer to [Doc FAQ Page](https://clash-verge-rev.github.io/faq/windows.html)
+<p align="center">
+  <img src="./docs/preview_quick_panel.png" alt="Tray quick panel" width="340" />
+</p>
 
-### Donation
+Left-clicking the Moclash tray icon opens a small quick panel next to the icon
+instead of the main window. From it you can:
 
-[捐助Clash Verge Rev的开发](https://github.com/sponsors/clash-verge-rev)
+- switch the proxy mode between **Rule**, **Global** and **Direct**;
+- pick a server in any selector group of the current profile, with live
+  latency badges and a latency test button;
+- toggle **System Proxy** and **TUN** mode;
+- open the full dashboard or quit Moclash.
+
+The panel closes when it loses focus or when you press `Esc`. It also works in
+lightweight mode, which closes the main window to save memory while the core,
+system proxy and tray keep running. On Linux desktops whose tray does not
+report clicks, open it from the tray menu with **Quick Panel**. To get the old
+behaviour back, change **Settings → Tray Click Event** to "Show Main Window".
+
+## Send HWID
+
+Some subscription panels, such as Remnawave, limit how many devices may use a
+subscription and identify devices by Happ-style request headers. When
+the global **Send HWID** setting is enabled, Moclash sends these headers when
+downloading or updating subscriptions:
+
+| Header           | Value                                    |
+| :--------------- | :--------------------------------------- |
+| `x-hwid`         | Device identifier (see below)            |
+| `x-device-os`    | `Windows`, `macOS` or `Linux`            |
+| `x-ver-os`       | Operating system version                 |
+| `x-device-model` | Device model reported by the OS          |
+
+The HWID is derived from the operating system's machine ID (Windows
+`MachineGuid`, macOS `IOPlatformUUID`, Linux `machine-id`), hashed with SHA-256
+and shortened to 16 hex characters, so the raw machine ID never leaves the
+device. You can override it with a custom HWID in the same settings section.
+The setting is off by default.
 
 ## Development
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for more details.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for prerequisites and details.
 
-To run the development server, execute the following commands after all prerequisites for **Tauri** are installed:
+After all prerequisites for **Tauri** are installed, run:
 
 ```shell
 pnpm i
@@ -114,28 +123,40 @@ uninstalled and the app starts in Sidecar mode. Use `pnpm dev:service` to
 explicitly install or update the isolated development service before launch,
 or `pnpm dev:sidecar` to force the unprivileged Sidecar workflow.
 
-## Contributions
+### Frontend layout
 
-Issue and PR welcome!
+| Directory | Interface                                        | Scripts                          |
+| :-------- | :----------------------------------------------- | :------------------------------- |
+| `ui/`     | New shadcn/ui interface, used by Tauri           | `pnpm ui:dev`, `pnpm ui:build`   |
+| `src/`    | Original MUI interface, kept as a fallback       | `pnpm web:dev`, `pnpm web:build` |
 
-## Acknowledgement
+`pnpm ui:dev` starts only the web UI dev server, without the Tauri shell.
 
-Clash Verge rev was based on or inspired by these projects and so on:
+## Contributing
 
-- [zzzgydi/clash-verge](https://github.com/zzzgydi/clash-verge): A Clash GUI based on tauri. Supports Windows, macOS and Linux.
-- [tauri-apps/tauri](https://github.com/tauri-apps/tauri): Build smaller, faster, and more secure desktop applications with a web frontend.
-- [Dreamacro/clash](https://github.com/Dreamacro/clash): A rule-based tunnel in Go.
-- [MetaCubeX/mihomo](https://github.com/MetaCubeX/mihomo): A rule-based tunnel in Go.
-- [Fndroid/clash_for_windows_pkg](https://github.com/Fndroid/clash_for_windows_pkg): A Windows/macOS GUI based on Clash.
-- [vitejs/vite](https://github.com/vitejs/vite): Next generation frontend tooling. It's fast!
+Issues and pull requests are welcome. Please read
+[CONTRIBUTING.md](./CONTRIBUTING.md) first.
+
+## Acknowledgements
+
+Moclash is a fork of
+[Clash Verge Rev](https://github.com/clash-verge-rev/clash-verge-rev), and is
+based on or inspired by these projects:
+
+- [zzzgydi/clash-verge](https://github.com/zzzgydi/clash-verge): A Clash GUI
+  based on Tauri.
+- [tauri-apps/tauri](https://github.com/tauri-apps/tauri): Build smaller,
+  faster, and more secure desktop applications with a web frontend.
+- [MetaCubeX/mihomo](https://github.com/MetaCubeX/mihomo): A rule-based tunnel
+  in Go.
+- [shadcn/ui](https://github.com/shadcn-ui/ui): Accessible, customizable
+  components the new interface is built with.
 
 ## Privacy
 
-Clash Verge Rev 不收集任何用户数据，配置与日志仅保存在本地。详见[隐私政策](./PRIVACY.md)。
-
-Clash Verge Rev does not collect any user data; configuration and logs stay on
-your own device. See the [Privacy Policy](./PRIVACY.md) for details.
+Moclash collects no user data; configuration and logs stay on your device. See
+the [Privacy Policy](./PRIVACY.md) for details.
 
 ## License
 
-GPL-3.0 License. See [License here](./LICENSE) for details.
+GPL-3.0 License. See [LICENSE](./LICENSE) for details.
