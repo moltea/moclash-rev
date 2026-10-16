@@ -25,6 +25,11 @@ on:
         required: false
         default: false
         type: boolean
+      autobuild_version:
+        description: 'Autobuild version whose assets are kept (default: derived from the checked-out commit)'
+        required: false
+        default: ''
+        type: string
 
 permissions: write-all
 
@@ -48,6 +53,8 @@ jobs:
 
       - name: Get current version and find last Tauri commit
         id: check
+        env:
+          INPUT_AUTOBUILD_VERSION: ${{ inputs.autobuild_version }}
         run: |
           CURRENT_VERSION=$(cat package.json | jq -r '.version')
           echo "📦 Current version: $CURRENT_VERSION"
@@ -85,6 +92,9 @@ jobs:
           MONTH=$(TZ=Asia/Shanghai date +%m)
           DAY=$(TZ=Asia/Shanghai date +%d)
           AUTOBUILD_VERSION="${CURRENT_BASE_VERSION}+autobuild.${MONTH}${DAY}.${LAST_TAURI_COMMIT}"
+          if [ -n "$INPUT_AUTOBUILD_VERSION" ]; then
+            AUTOBUILD_VERSION="$INPUT_AUTOBUILD_VERSION"
+          fi
 
           echo "🏷️  Current autobuild version: $AUTOBUILD_VERSION"
 

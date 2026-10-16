@@ -13,6 +13,7 @@ env:
 
 jobs:
   sign-windows:
+    if: ${{ github.repository == 'clash-verge-rev/clash-verge-rev' }}
     runs-on: windows-latest
     timeout-minutes: 90
     steps:

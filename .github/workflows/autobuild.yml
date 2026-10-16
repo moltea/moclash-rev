@@ -2,27 +2,32 @@ name: Auto Build
 
 on:
   workflow_dispatch:
-  schedule:
-    # UTC+8 06:00, 18:00 -> UTC 22:00, 10:00
-    - cron: '0 10,22 * * *'
+  push:
+    branches: [dev]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.github/ISSUE_TEMPLATE/**'
+      - 'LICENSE'
 permissions: write-all
 env:
   TAG_NAME: autobuild
-  TAG_CHANNEL: AutoBuild
+  TAG_CHANNEL: Nightly
   CARGO_INCREMENTAL: 0
   RUST_BACKTRACE: short
   HUSKY: 0
 concurrency:
   group: '${{ github.workflow }} - ${{ github.head_ref || github.ref }}'
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+  cancel-in-progress: true
 
 jobs:
   check_commit:
     name: Check Commit Needs Build
-    uses: clash-verge-rev/clash-verge-rev/.github/workflows/check-commit-needs-build.yml@dev
+    uses: ./.github/workflows/check-commit-needs-build.yml
     with:
       tag_name: autobuild
-      force_build: ${{ github.event_name == 'workflow_dispatch' }}
+      # Every push to dev publishes a nightly, not only Tauri-related changes.
+      force_build: true
 
   update_tag:
     name: Update tag
@@ -31,17 +36,10 @@ jobs:
     if: ${{ needs.check_commit.outputs.should_run == 'true' }}
     outputs:
       release_id: ${{ steps.upload_release.outputs.id }}
+      version: ${{ steps.set_env.outputs.version }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
-
-      - name: Group changelog platforms
-        run: bash ./scripts-workflow/group_platforms.sh
-
-      - name: Fetch UPDATE logs
-        id: fetch_update_logs
-        run: bash ./scripts/extract_update_logs.sh
-        shell: bash
 
       - uses: pnpm/action-setup@v6.1.0
         name: Install pnpm
@@ -60,51 +58,65 @@ jobs:
         run: pnpm release-version autobuild-latest
 
       - name: Set Env
+        id: set_env
         run: |
-          echo "BUILDTIME=$(TZ=Asia/Shanghai date)" >> $GITHUB_ENV
+          echo "BUILDTIME=$(date -u '+%Y-%m-%d %H:%M UTC')" >> $GITHUB_ENV
           VERSION=$(jq -r .version package.json)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "DOWNLOAD_URL=https://github.com/clash-verge-rev/clash-verge-rev/releases/download/autobuild" >> $GITHUB_ENV
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          PRODUCT_NAME=$(jq -r .productName src-tauri/tauri.conf.json)
+          echo "PRODUCT_NAME=$PRODUCT_NAME" >> $GITHUB_ENV
+          # GitHub replaces spaces in release asset names with dots.
+          echo "ASSET_PREFIX=${PRODUCT_NAME// /.}" >> $GITHUB_ENV
+          echo "REPO_URL=https://github.com/${{ github.repository }}" >> $GITHUB_ENV
+          echo "DOWNLOAD_URL=https://github.com/${{ github.repository }}/releases/download/${{ env.TAG_NAME }}" >> $GITHUB_ENV
         shell: bash
 
-      - run: |
-          if [ -z "$UPDATE_LOGS" ]; then
-            echo "No update logs found, using default message"
-            UPDATE_LOGS="More new features are now supported. Check for detailed changelog soon."
-          else
-            echo "Using found update logs"
+      - name: Generate release.txt
+        run: |
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          SUBJECT=$(git log -1 --format=%s)
+          PREV_SHA=$(git ls-remote origin "refs/tags/${TAG_NAME}" | cut -f1)
+          CHANGES=""
+          if [ -n "$PREV_SHA" ] && [ "$PREV_SHA" != "$GITHUB_SHA" ]; then
+            CHANGES="Changes since the previous nightly: [${PREV_SHA::7}...${SHORT_SHA}](${REPO_URL}/compare/${PREV_SHA}...${GITHUB_SHA})"
           fi
 
           cat > release.txt << EOF
-          $UPDATE_LOGS
+          Nightly build of the latest \`dev\` commit [\`${SHORT_SHA}\`](${REPO_URL}/commit/${GITHUB_SHA}): ${SUBJECT}
 
-          ## 下载地址
+          ${CHANGES}
 
-          ### Windows (不再支持Win7)
-          #### 正常版本(推荐)
-          - [64位(常用)](${{ env.DOWNLOAD_URL }}/Clash.Verge_${{ env.VERSION }}_x64-setup.exe) | [ARM64(不常用)](${{ env.DOWNLOAD_URL }}/Clash.Verge_${{ env.VERSION }}_arm64-setup.exe)
+          Nightly builds are untested prereleases and are replaced on every push to \`dev\`.
 
-          #### 内置Webview2版(体积较大，仅在企业版系统或无法安装webview2时使用)
-          - [64位](${{ env.DOWNLOAD_URL }}/Clash.Verge_${{ env.VERSION }}_x64_fixed_webview2-setup.exe) | [ARM64](${{ env.DOWNLOAD_URL }}/Clash.Verge_${{ env.VERSION }}_arm64_fixed_webview2-setup.exe)
+          ## Downloads
+
+          ### Windows (Windows 7 is not supported)
+          #### Standard (recommended)
+          - [x64](${DOWNLOAD_URL}/${ASSET_PREFIX}_${VERSION}_x64-setup.exe) | [ARM64](${DOWNLOAD_URL}/${ASSET_PREFIX}_${VERSION}_arm64-setup.exe)
+
+          #### Fixed WebView2 runtime (larger; only for systems where WebView2 cannot be installed)
+          - [x64](${DOWNLOAD_URL}/${ASSET_PREFIX}_${VERSION}_x64_fixed_webview2-setup.exe) | [ARM64](${DOWNLOAD_URL}/${ASSET_PREFIX}_${VERSION}_arm64_fixed_webview2-setup.exe)
 
           ### macOS
-          - [Apple M芯片](${{ env.DOWNLOAD_URL }}/Clash.Verge_${{ env.VERSION }}_aarch64.dmg) | [Intel芯片](${{ env.DOWNLOAD_URL }}/Clash.Verge_${{ env.VERSION }}_x64.dmg)
+          - [Apple Silicon](${DOWNLOAD_URL}/${ASSET_PREFIX}_${VERSION}_aarch64.dmg) | [Intel](${DOWNLOAD_URL}/${ASSET_PREFIX}_${VERSION}_x64.dmg)
+
+          If macOS reports the app as damaged, run \`xattr -cr "/Applications/${PRODUCT_NAME}.app"\`.
 
           ### Linux
-          #### DEB包(Debian系) 使用 apt ./路径 安装
-          - [64位](${{ env.DOWNLOAD_URL }}/Clash.Verge_${{ env.VERSION }}_amd64.deb) | [ARM64](${{ env.DOWNLOAD_URL }}/Clash.Verge_${{ env.VERSION }}_arm64.deb) | [ARMv7](${{ env.DOWNLOAD_URL }}/Clash.Verge_${{ env.VERSION }}_armhf.deb)
+          #### DEB (Debian/Ubuntu), install with \`sudo apt install ./<file>.deb\`
+          - [x64](${DOWNLOAD_URL}/${ASSET_PREFIX}_${VERSION}_amd64.deb) | [ARM64](${DOWNLOAD_URL}/${ASSET_PREFIX}_${VERSION}_arm64.deb) | [ARMv7](${DOWNLOAD_URL}/${ASSET_PREFIX}_${VERSION}_armhf.deb)
 
-          #### RPM包(Redhat系) 使用 dnf ./路径 安装
-          - [64位](${{ env.DOWNLOAD_URL }}/Clash.Verge-${{ env.VERSION }}-1.x86_64.rpm) | [ARM64](${{ env.DOWNLOAD_URL }}/Clash.Verge-${{ env.VERSION }}-1.aarch64.rpm) | [ARMv7](${{ env.DOWNLOAD_URL }}/Clash.Verge-${{ env.VERSION }}-1.armhfp.rpm)
+          #### RPM (Fedora/RHEL), install with \`sudo dnf install ./<file>.rpm\`
+          - [x64](${DOWNLOAD_URL}/${ASSET_PREFIX}-${VERSION}-1.x86_64.rpm) | [ARM64](${DOWNLOAD_URL}/${ASSET_PREFIX}-${VERSION}-1.aarch64.rpm) | [ARMv7](${DOWNLOAD_URL}/${ASSET_PREFIX}-${VERSION}-1.armhfp.rpm)
 
-          ### FAQ
-          - [常见问题](https://clash-verge-rev.github.io/faq/windows.html)
-
-          ### 稳定机场VPN推荐
-          - [狗狗加速](https://cvr.dginv.click/#/register?code=oaxsAGo6)
-
-          Created at ${{ env.BUILDTIME }}.
+          Version \`${VERSION}\`, commit \`${SHORT_SHA}\`, built at ${BUILDTIME}.
           EOF
+
+      - name: Move ${{ env.TAG_NAME }} tag to current commit
+        run: |
+          git tag -f "$TAG_NAME" "$GITHUB_SHA"
+          git push -f origin "refs/tags/$TAG_NAME" || echo "::warning::Could not move tag $TAG_NAME to $GITHUB_SHA"
 
       - name: Upload Release
         id: upload_release
@@ -112,7 +124,7 @@ jobs:
         with:
           tag_name: ${{ env.TAG_NAME }}
           target_commitish: ${{ github.sha }}
-          name: 'Clash Verge Rev ${{ env.TAG_CHANNEL }}'
+          name: 'Moclash ${{ env.TAG_CHANNEL }}'
           body_path: release.txt
           prerelease: true
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -120,12 +132,20 @@ jobs:
 
   clean_old_assets:
     name: Clean Old Release Assets
-    needs: [check_commit, update_tag]
-    if: ${{ needs.check_commit.outputs.should_run == 'true' && needs.update_tag.result == 'success' }}
+    needs:
+      [
+        check_commit,
+        update_tag,
+        autobuild-x86-windows-macos-linux,
+        autobuild-arm-linux,
+        autobuild-x86-arm-windows_webview2,
+      ]
+    if: ${{ !cancelled() && needs.check_commit.outputs.should_run == 'true' && needs.update_tag.result == 'success' }}
 
-    uses: clash-verge-rev/clash-verge-rev/.github/workflows/clean-old-assets.yml@dev
+    uses: ./.github/workflows/clean-old-assets.yml
     with:
       tag_name: autobuild
+      autobuild_version: ${{ needs.update_tag.outputs.version }}
       dry_run: false
 
   autobuild-x86-windows-macos-linux:
@@ -202,7 +222,7 @@ jobs:
           pnpm run prebuild ${{ matrix.target }}
 
       - name: Release ${{ env.TAG_CHANNEL }} Version
-        run: pnpm release-version autobuild-latest
+        run: pnpm release-version ${{ needs.update_tag.outputs.version }}
 
       - name: Add Rust Target
         run: |
@@ -210,23 +230,28 @@ jobs:
           rustup target list --installed
           echo "Rust target ${{ matrix.target }} installed."
 
-      - name: Tauri build for Windows-macOS-Linux
-        uses: tauri-apps/tauri-action@v1
+      - name: Export optional signing secrets
+        shell: bash
         env:
-          NODE_OPTIONS: '--max_old_space_size=4096'
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
-          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+          TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
           APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
           APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
           APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: bash ./scripts-workflow/export_signing_env.sh
+
+      - name: Tauri build for Windows-macOS-Linux
+        uses: tauri-apps/tauri-action@v1
+        env:
+          NODE_OPTIONS: '--max_old_space_size=4096'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           releaseId: ${{ needs.update_tag.outputs.release_id }}
           tagName: ${{ env.TAG_NAME }}
-          releaseName: 'Clash Verge Rev ${{ env.TAG_CHANNEL }}'
+          releaseName: 'Moclash ${{ env.TAG_CHANNEL }}'
           releaseBody: 'More new features are now supported.'
           releaseDraft: false
           prerelease: true
@@ -299,7 +324,7 @@ jobs:
           pnpm run prebuild ${{ matrix.target }}
 
       - name: Release ${{ env.TAG_CHANNEL }} Version
-        run: pnpm release-version autobuild-latest
+        run: pnpm release-version ${{ needs.update_tag.outputs.version }}
 
       - name: 'Setup for linux'
         run: |-
@@ -351,6 +376,13 @@ jobs:
           rustup target list --installed
           echo "Rust target ${{ matrix.target }} installed."
 
+      - name: Export optional signing secrets
+        shell: bash
+        env:
+          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+          TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+        run: bash ./scripts-workflow/export_signing_env.sh
+
       - name: Tauri Build for Linux
         run: |
           export PKG_CONFIG_ALLOW_CROSS=1
@@ -364,8 +396,6 @@ jobs:
           pnpm build --target ${{ matrix.target }}
         env:
           NODE_OPTIONS: '--max_old_space_size=4096'
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
-          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
 
       - name: Get Version
         run: |
@@ -378,7 +408,7 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ env.TAG_NAME }}
-          name: 'Clash Verge Rev ${{ env.TAG_CHANNEL }}'
+          name: 'Moclash ${{ env.TAG_CHANNEL }}'
           prerelease: true
           token: ${{ secrets.GITHUB_TOKEN }}
           files: |
@@ -443,7 +473,7 @@ jobs:
           pnpm run prebuild ${{ matrix.target }}
 
       - name: Release ${{ env.TAG_CHANNEL }} Version
-        run: pnpm release-version autobuild-latest
+        run: pnpm release-version ${{ needs.update_tag.outputs.version }}
 
       - name: Download WebView2 Runtime
         run: |
@@ -458,14 +488,19 @@ jobs:
           rustup target list --installed
           echo "Rust target ${{ matrix.target }} installed."
 
+      - name: Export optional signing secrets
+        shell: bash
+        env:
+          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+          TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+        run: bash ./scripts-workflow/export_signing_env.sh
+
       - name: Tauri build for Windows
         id: build
         uses: tauri-apps/tauri-action@v1
         env:
           NODE_OPTIONS: '--max_old_space_size=4096'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
-          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
         with:
           tauriScript: pnpm
           args: --target ${{ matrix.target }}
@@ -494,13 +529,14 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ env.TAG_NAME }}
-          name: 'Clash Verge Rev ${{ env.TAG_CHANNEL }}'
+          name: 'Moclash ${{ env.TAG_CHANNEL }}'
           prerelease: true
           token: ${{ secrets.GITHUB_TOKEN }}
           files: target/${{ matrix.target }}/release/bundle/nsis/*setup*
 
   notify-telegram:
     name: Notify Telegram
+    if: ${{ github.repository == 'clash-verge-rev/clash-verge-rev' }}
     runs-on: ubuntu-latest
     needs:
       [
@@ -542,7 +578,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install jq
           echo "VERSION=$(cat package.json | jq '.version' | tr -d '"')" >> $GITHUB_ENV
-          echo "DOWNLOAD_URL=https://github.com/clash-verge-rev/clash-verge-rev/releases/download/autobuild" >> $GITHUB_ENV
+          echo "DOWNLOAD_URL=https://github.com/${{ github.repository }}/releases/download/autobuild" >> $GITHUB_ENV
+          echo "ASSET_PREFIX=$(jq -r '.productName | gsub(" "; ".")' src-tauri/tauri.conf.json)" >> $GITHUB_ENV
           echo "BUILDTIME=$(TZ=Asia/Shanghai date)" >> $GITHUB_ENV
 
       - name: Generate release.txt
@@ -561,20 +598,20 @@ jobs:
 
           ### Windows (不再支持Win7)
           #### 正常版本(推荐)
-          - [64位(常用)](${{ env.DOWNLOAD_URL }}/Clash.Verge_${{ env.VERSION }}_x64-setup.exe) | [ARM64(不常用)](${{ env.DOWNLOAD_URL }}/Clash.Verge_${{ env.VERSION }}_arm64-setup.exe)
+          - [64位(常用)](${{ env.DOWNLOAD_URL }}/${{ env.ASSET_PREFIX }}_${{ env.VERSION }}_x64-setup.exe) | [ARM64(不常用)](${{ env.DOWNLOAD_URL }}/${{ env.ASSET_PREFIX }}_${{ env.VERSION }}_arm64-setup.exe)
 
           #### 内置Webview2版(体积较大，仅在企业版系统或无法安装webview2时使用)
-          - [64位](${{ env.DOWNLOAD_URL }}/Clash.Verge_${{ env.VERSION }}_x64_fixed_webview2-setup.exe) | [ARM64](${{ env.DOWNLOAD_URL }}/Clash.Verge_${{ env.VERSION }}_arm64_fixed_webview2-setup.exe)
+          - [64位](${{ env.DOWNLOAD_URL }}/${{ env.ASSET_PREFIX }}_${{ env.VERSION }}_x64_fixed_webview2-setup.exe) | [ARM64](${{ env.DOWNLOAD_URL }}/${{ env.ASSET_PREFIX }}_${{ env.VERSION }}_arm64_fixed_webview2-setup.exe)
 
           ### macOS
-          - [Apple M芯片](${{ env.DOWNLOAD_URL }}/Clash.Verge_${{ env.VERSION }}_aarch64.dmg) | [Intel芯片](${{ env.DOWNLOAD_URL }}/Clash.Verge_${{ env.VERSION }}_x64.dmg)
+          - [Apple M芯片](${{ env.DOWNLOAD_URL }}/${{ env.ASSET_PREFIX }}_${{ env.VERSION }}_aarch64.dmg) | [Intel芯片](${{ env.DOWNLOAD_URL }}/${{ env.ASSET_PREFIX }}_${{ env.VERSION }}_x64.dmg)
 
           ### Linux
           #### DEB包(Debian系) 使用 apt ./路径 安装
-          - [64位](${{ env.DOWNLOAD_URL }}/Clash.Verge_${{ env.VERSION }}_amd64.deb) | [ARM64](${{ env.DOWNLOAD_URL }}/Clash.Verge_${{ env.VERSION }}_arm64.deb) | [ARMv7](${{ env.DOWNLOAD_URL }}/Clash.Verge_${{ env.VERSION }}_armhf.deb)
+          - [64位](${{ env.DOWNLOAD_URL }}/${{ env.ASSET_PREFIX }}_${{ env.VERSION }}_amd64.deb) | [ARM64](${{ env.DOWNLOAD_URL }}/${{ env.ASSET_PREFIX }}_${{ env.VERSION }}_arm64.deb) | [ARMv7](${{ env.DOWNLOAD_URL }}/${{ env.ASSET_PREFIX }}_${{ env.VERSION }}_armhf.deb)
 
           #### RPM包(Redhat系) 使用 dnf ./路径 安装
-          - [64位](${{ env.DOWNLOAD_URL }}/Clash.Verge-${{ env.VERSION }}-1.x86_64.rpm) | [ARM64](${{ env.DOWNLOAD_URL }}/Clash.Verge-${{ env.VERSION }}-1.aarch64.rpm) | [ARMv7](${{ env.DOWNLOAD_URL }}/Clash.Verge-${{ env.VERSION }}-1.armhfp.rpm)
+          - [64位](${{ env.DOWNLOAD_URL }}/${{ env.ASSET_PREFIX }}-${{ env.VERSION }}-1.x86_64.rpm) | [ARM64](${{ env.DOWNLOAD_URL }}/${{ env.ASSET_PREFIX }}-${{ env.VERSION }}-1.aarch64.rpm) | [ARMv7](${{ env.DOWNLOAD_URL }}/${{ env.ASSET_PREFIX }}-${{ env.VERSION }}-1.armhfp.rpm)
 
           ### FAQ
           - [常见问题](https://clash-verge-rev.github.io/faq/windows.html)
