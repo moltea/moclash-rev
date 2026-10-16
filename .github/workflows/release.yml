@@ -18,25 +18,29 @@ jobs:
   check_tag_version:
     name: Check Release Tag and package.json Version Consistency
     runs-on: ubuntu-latest
+    outputs:
+      has_updater_key: ${{ steps.check_updater_key.outputs.has_updater_key }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
-      - name: Check if tag is from main branch
+      - name: Check if tag is from the default branch
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
           TAG_REF="${GITHUB_REF##*/}"
-          echo "Checking if tag $TAG_REF is from main branch..."
+          echo "Checking if tag $TAG_REF is from $DEFAULT_BRANCH branch..."
 
-          TAG_COMMIT=$(git rev-list -n 1 $TAG_REF)
-          MAIN_COMMITS=$(git rev-list origin/main)
+          git fetch origin "+refs/heads/$DEFAULT_BRANCH:refs/remotes/origin/$DEFAULT_BRANCH"
+          TAG_COMMIT=$(git rev-list -n 1 "$TAG_REF")
 
-          if echo "$MAIN_COMMITS" | grep -q "$TAG_COMMIT"; then
-            echo "✅ Tag $TAG_REF is from main branch"
+          if git merge-base --is-ancestor "$TAG_COMMIT" "origin/$DEFAULT_BRANCH"; then
+            echo "✅ Tag $TAG_REF is from $DEFAULT_BRANCH branch"
           else
-            echo "❌ Tag $TAG_REF is not from main branch"
-            echo "This release workflow only accepts tags from main branch."
+            echo "❌ Tag $TAG_REF is not from $DEFAULT_BRANCH branch"
+            echo "This release workflow only accepts tags from the default branch ($DEFAULT_BRANCH)."
             exit 1
           fi
 
@@ -59,6 +63,27 @@ jobs:
 
           echo "✅ Tag and package.json version are consistent."
 
+      - name: Check Changelog.md section
+        run: |
+          TAG_REF="${GITHUB_REF_NAME:-${GITHUB_REF##*/}}"
+          HEADING=$(grep -m1 '^## v' Changelog.md || true)
+          echo "Latest Changelog.md section: $HEADING"
+
+          if [[ "$HEADING" != "## $TAG_REF" && "$HEADING" != "## $TAG_REF "* && "$HEADING" != "## ${TAG_REF%%-*}" ]]; then
+            echo "❌ The first '## v' section of Changelog.md must be '## $TAG_REF'"
+            exit 1
+          fi
+
+      - name: Check updater signing key
+        id: check_updater_key
+        env:
+          HAS_UPDATER_KEY: ${{ secrets.TAURI_PRIVATE_KEY != '' }}
+        run: |
+          echo "has_updater_key=$HAS_UPDATER_KEY" >> "$GITHUB_OUTPUT"
+          if [ "$HAS_UPDATER_KEY" != "true" ]; then
+            echo "::warning::TAURI_PRIVATE_KEY is not set, updater files will not be published"
+          fi
+
   prepare_release:
     name: Prepare Draft Release
     runs-on: ubuntu-latest
@@ -78,8 +103,8 @@ jobs:
           draft: true
           prerelease: ${{ contains(github.ref_name, '-rc') }}
 
-  update_tag:
-    name: Update tag
+  release-aliases:
+    name: Upload Version-less Aliases
     runs-on: ubuntu-latest
     needs:
       [
@@ -88,6 +113,44 @@ jobs:
         release-for-linux-arm,
         release-for-fixed-webview2,
       ]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Upload version-less aliases
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG_NAME="${GITHUB_REF_NAME}"
+          VERSION="${TAG_NAME#v}"
+          PRODUCT_NAME=$(jq -r .productName src-tauri/tauri.conf.json)
+          ASSET_PREFIX="${PRODUCT_NAME// /.}"
+
+          mkdir -p aliases
+          while read -r SOURCE ALIAS; do
+            echo "$SOURCE -> $ALIAS"
+            gh release download "$TAG_NAME" --pattern "$SOURCE" --output "aliases/$ALIAS"
+          done << EOF
+          ${ASSET_PREFIX}_${VERSION}_x64-setup.exe ${ASSET_PREFIX}_x64-setup.exe
+          ${ASSET_PREFIX}_${VERSION}_arm64-setup.exe ${ASSET_PREFIX}_arm64-setup.exe
+          ${ASSET_PREFIX}_${VERSION}_x64_fixed_webview2-setup.exe ${ASSET_PREFIX}_x64_fixed_webview2-setup.exe
+          ${ASSET_PREFIX}_${VERSION}_arm64_fixed_webview2-setup.exe ${ASSET_PREFIX}_arm64_fixed_webview2-setup.exe
+          ${ASSET_PREFIX}_${VERSION}_aarch64.dmg ${ASSET_PREFIX}_aarch64.dmg
+          ${ASSET_PREFIX}_${VERSION}_x64.dmg ${ASSET_PREFIX}_x64.dmg
+          ${ASSET_PREFIX}_${VERSION}_amd64.deb ${ASSET_PREFIX}_amd64.deb
+          ${ASSET_PREFIX}_${VERSION}_arm64.deb ${ASSET_PREFIX}_arm64.deb
+          ${ASSET_PREFIX}_${VERSION}_armhf.deb ${ASSET_PREFIX}_armhf.deb
+          ${ASSET_PREFIX}-${VERSION}-1.x86_64.rpm ${ASSET_PREFIX}.x86_64.rpm
+          ${ASSET_PREFIX}-${VERSION}-1.aarch64.rpm ${ASSET_PREFIX}.aarch64.rpm
+          ${ASSET_PREFIX}-${VERSION}-1.armhfp.rpm ${ASSET_PREFIX}.armhfp.rpm
+          EOF
+
+          gh release upload "$TAG_NAME" aliases/* --clobber
+
+  update_tag:
+    name: Update tag
+    runs-on: ubuntu-latest
+    needs: [prepare_release, release-aliases]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
@@ -102,13 +165,16 @@ jobs:
 
       - name: Set Env
         run: |
-          echo "BUILDTIME=$(TZ=Asia/Shanghai date)" >> $GITHUB_ENV
+          echo "BUILDTIME=$(date -u '+%Y-%m-%d %H:%M UTC')" >> $GITHUB_ENV
           TAG_REF="${GITHUB_REF##*/}"
           echo "TAG_NAME=$TAG_REF" >> $GITHUB_ENV
           VERSION=$(echo "$TAG_REF" | sed 's/^v//')
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "DOWNLOAD_URL=https://github.com/${{ github.repository }}/releases/download/$TAG_REF" >> $GITHUB_ENV
-          echo "ASSET_PREFIX=$(jq -r '.productName | gsub(" "; ".")' src-tauri/tauri.conf.json)" >> $GITHUB_ENV
+          echo "DOWNLOAD_URL=https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}" >> $GITHUB_ENV
+          echo "LATEST_URL=https://github.com/${{ github.repository }}/releases/latest/download" >> $GITHUB_ENV
+          PRODUCT_NAME=$(jq -r .productName src-tauri/tauri.conf.json)
+          echo "PRODUCT_NAME=$PRODUCT_NAME" >> $GITHUB_ENV
+          echo "ASSET_PREFIX=${PRODUCT_NAME// /.}" >> $GITHUB_ENV
         shell: bash
 
       - run: |
@@ -122,38 +188,44 @@ jobs:
           cat > release.txt << EOF
           $UPDATE_LOGS
 
-          ## 下载地址
+          ## Downloads
 
-          ### Windows (不再支持Win7)
-          #### 正常版本(推荐)
-          - [64位(常用)](${{ env.DOWNLOAD_URL }}/${{ env.ASSET_PREFIX }}_${{ env.VERSION }}_x64-setup.exe) | [ARM64(不常用)](${{ env.DOWNLOAD_URL }}/${{ env.ASSET_PREFIX }}_${{ env.VERSION }}_arm64-setup.exe)
+          ### Windows (Windows 7 is not supported)
+          #### Standard (recommended)
+          - [x64](${DOWNLOAD_URL}/${ASSET_PREFIX}_${VERSION}_x64-setup.exe) | [ARM64](${DOWNLOAD_URL}/${ASSET_PREFIX}_${VERSION}_arm64-setup.exe)
 
-          #### 内置Webview2版(体积较大，仅在企业版系统或无法安装webview2时使用)
-          - [64位](${{ env.DOWNLOAD_URL }}/${{ env.ASSET_PREFIX }}_${{ env.VERSION }}_x64_fixed_webview2-setup.exe) | [ARM64](${{ env.DOWNLOAD_URL }}/${{ env.ASSET_PREFIX }}_${{ env.VERSION }}_arm64_fixed_webview2-setup.exe)
+          #### Fixed WebView2 runtime (larger; only for systems where WebView2 cannot be installed)
+          - [x64](${DOWNLOAD_URL}/${ASSET_PREFIX}_${VERSION}_x64_fixed_webview2-setup.exe) | [ARM64](${DOWNLOAD_URL}/${ASSET_PREFIX}_${VERSION}_arm64_fixed_webview2-setup.exe)
 
           ### macOS
-          - [Apple M芯片](${{ env.DOWNLOAD_URL }}/${{ env.ASSET_PREFIX }}_${{ env.VERSION }}_aarch64.dmg) | [Intel芯片](${{ env.DOWNLOAD_URL }}/${{ env.ASSET_PREFIX }}_${{ env.VERSION }}_x64.dmg)
+          - [Apple Silicon](${DOWNLOAD_URL}/${ASSET_PREFIX}_${VERSION}_aarch64.dmg) | [Intel](${DOWNLOAD_URL}/${ASSET_PREFIX}_${VERSION}_x64.dmg)
+
+          macOS builds are ad-hoc signed: if macOS cannot verify the developer, use System Settings → Privacy & Security → Open Anyway; if it reports the app as damaged, run \`xattr -cr "/Applications/${PRODUCT_NAME}.app"\`.
 
           ### Linux
-          #### DEB包(Debian系) 使用 apt ./路径 安装
-          - [64位](${{ env.DOWNLOAD_URL }}/${{ env.ASSET_PREFIX }}_${{ env.VERSION }}_amd64.deb) | [ARM64](${{ env.DOWNLOAD_URL }}/${{ env.ASSET_PREFIX }}_${{ env.VERSION }}_arm64.deb) | [ARMv7](${{ env.DOWNLOAD_URL }}/${{ env.ASSET_PREFIX }}_${{ env.VERSION }}_armhf.deb)
+          #### DEB (Debian/Ubuntu), install with \`sudo apt install ./<file>.deb\`
+          - [x64](${DOWNLOAD_URL}/${ASSET_PREFIX}_${VERSION}_amd64.deb) | [ARM64](${DOWNLOAD_URL}/${ASSET_PREFIX}_${VERSION}_arm64.deb) | [ARMv7](${DOWNLOAD_URL}/${ASSET_PREFIX}_${VERSION}_armhf.deb)
 
-          #### RPM包(Redhat系) 使用 dnf ./路径 安装
-          - [64位](${{ env.DOWNLOAD_URL }}/${{ env.ASSET_PREFIX }}-${{ env.VERSION }}-1.x86_64.rpm) | [ARM64](${{ env.DOWNLOAD_URL }}/${{ env.ASSET_PREFIX }}-${{ env.VERSION }}-1.aarch64.rpm) | [ARMv7](${{ env.DOWNLOAD_URL }}/${{ env.ASSET_PREFIX }}-${{ env.VERSION }}-1.armhfp.rpm)
+          #### RPM (Fedora/RHEL), install with \`sudo dnf install ./<file>.rpm\`
+          - [x64](${DOWNLOAD_URL}/${ASSET_PREFIX}-${VERSION}-1.x86_64.rpm) | [ARM64](${DOWNLOAD_URL}/${ASSET_PREFIX}-${VERSION}-1.aarch64.rpm) | [ARMv7](${DOWNLOAD_URL}/${ASSET_PREFIX}-${VERSION}-1.armhfp.rpm)
 
-          ### FAQ
-          - [常见问题](https://clash-verge-rev.github.io/faq/windows.html)
+          ## Stable links
 
-          ### 稳定机场VPN推荐
-          - [狗狗加速](https://cvr.dginv.click/#/register?code=oaxsAGo6)
+          These links always point to the latest stable release:
 
-          Created at ${{ env.BUILDTIME }}.
+          - Windows: [x64](${LATEST_URL}/${ASSET_PREFIX}_x64-setup.exe) | [ARM64](${LATEST_URL}/${ASSET_PREFIX}_arm64-setup.exe) | [x64 fixed WebView2](${LATEST_URL}/${ASSET_PREFIX}_x64_fixed_webview2-setup.exe) | [ARM64 fixed WebView2](${LATEST_URL}/${ASSET_PREFIX}_arm64_fixed_webview2-setup.exe)
+          - macOS: [Apple Silicon](${LATEST_URL}/${ASSET_PREFIX}_aarch64.dmg) | [Intel](${LATEST_URL}/${ASSET_PREFIX}_x64.dmg)
+          - Linux DEB: [x64](${LATEST_URL}/${ASSET_PREFIX}_amd64.deb) | [ARM64](${LATEST_URL}/${ASSET_PREFIX}_arm64.deb) | [ARMv7](${LATEST_URL}/${ASSET_PREFIX}_armhf.deb)
+          - Linux RPM: [x64](${LATEST_URL}/${ASSET_PREFIX}.x86_64.rpm) | [ARM64](${LATEST_URL}/${ASSET_PREFIX}.aarch64.rpm) | [ARMv7](${LATEST_URL}/${ASSET_PREFIX}.armhfp.rpm)
+
+          Created at ${BUILDTIME}.
           EOF
 
       - name: Publish Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PRERELEASE: ${{ contains(github.ref_name, '-rc') }}
+          MAKE_LATEST: ${{ !contains(github.ref_name, '-rc') }}
         run: |
           release_id="${{ needs.prepare_release.outputs.release_id }}"
 
@@ -177,6 +249,7 @@ jobs:
             -F body=@release.txt \
             -F draft=false \
             -F prerelease="$PRERELEASE" \
+            -f make_latest="$MAKE_LATEST" \
             --silent
 
   release:
@@ -249,20 +322,25 @@ jobs:
           rustup target list --installed
           echo "Rust target ${{ matrix.target }} installed."
 
-      - name: Tauri build
-        # 上游 5.24 修改了 latest.json 的生成逻辑，且依赖 tauri-plugin-update 2.10.0 暂未发布，故锁定在 0.5.23 版本
-        uses: tauri-apps/tauri-action@v1.0.0
+      - name: Export optional signing secrets
+        shell: bash
         env:
-          NODE_OPTIONS: '--max_old_space_size=4096'
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
-          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+          TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
           APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
           APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
           APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: bash ./scripts-workflow/export_signing_env.sh
+
+      - name: Tauri build
+        # 上游 5.24 修改了 latest.json 的生成逻辑，且依赖 tauri-plugin-update 2.10.0 暂未发布，故锁定在 0.5.23 版本
+        uses: tauri-apps/tauri-action@v1.0.0
+        env:
+          NODE_OPTIONS: '--max_old_space_size=4096'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           releaseId: ${{ needs.prepare_release.outputs.release_id }}
           tagName: ${{ github.ref_name }}
@@ -394,6 +472,13 @@ jobs:
           rustup target list --installed
           echo "Rust target ${{ matrix.target }} installed."
 
+      - name: Export optional signing secrets
+        shell: bash
+        env:
+          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+          TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+        run: bash ./scripts-workflow/export_signing_env.sh
+
       - name: Build for Linux
         run: |
           export PKG_CONFIG_ALLOW_CROSS=1
@@ -407,8 +492,6 @@ jobs:
           pnpm build --target ${{ matrix.target }}
         env:
           NODE_OPTIONS: '--max_old_space_size=4096'
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
-          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
 
       - name: Attest Linux bundles
         uses: actions/attest-build-provenance@v4
@@ -492,13 +575,18 @@ jobs:
           rustup target list --installed
           echo "Rust target ${{ matrix.target }} installed."
 
+      - name: Export optional signing secrets
+        shell: bash
+        env:
+          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+          TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+        run: bash ./scripts-workflow/export_signing_env.sh
+
       - name: Tauri build
         uses: tauri-apps/tauri-action@v1.0.0
         env:
           NODE_OPTIONS: '--max_old_space_size=4096'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
-          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
         with:
           tauriScript: pnpm
           args: --target ${{ matrix.target }}
@@ -537,10 +625,10 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
   release-update:
-    if: ${{ !contains(github.ref_name, '-rc') }}
+    if: ${{ !contains(github.ref_name, '-rc') && needs.check_tag_version.outputs.has_updater_key == 'true' }}
     name: Release Update
     runs-on: ubuntu-latest
-    needs: [update_tag]
+    needs: [check_tag_version, update_tag]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
@@ -564,9 +652,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   release-update-for-fixed-webview2:
-    if: ${{ !contains(github.ref_name, '-rc') }}
+    if: ${{ !contains(github.ref_name, '-rc') && needs.check_tag_version.outputs.has_updater_key == 'true' }}
     runs-on: ubuntu-latest
-    needs: [update_tag]
+    needs: [check_tag_version, update_tag]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
