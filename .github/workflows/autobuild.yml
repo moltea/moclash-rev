@@ -101,7 +101,7 @@ jobs:
           ### macOS
           - [Apple Silicon](${DOWNLOAD_URL}/${ASSET_PREFIX}_${VERSION}_aarch64.dmg) | [Intel](${DOWNLOAD_URL}/${ASSET_PREFIX}_${VERSION}_x64.dmg)
 
-          If macOS reports the app as damaged, run \`xattr -cr "/Applications/${PRODUCT_NAME}.app"\`.
+          macOS builds are ad-hoc signed: if macOS cannot verify the developer, use System Settings → Privacy & Security → Open Anyway; if it reports the app as damaged, run \`xattr -cr "/Applications/${PRODUCT_NAME}.app"\`.
 
           ### Linux
           #### DEB (Debian/Ubuntu), install with \`sudo apt install ./<file>.deb\`

@@ -40,8 +40,10 @@ Nightly assets:
 > `Moclash_<version>_amd64.deb`, `Moclash-<version>-1.x86_64.rpm`), and the
 > app is installed and shown as "Moclash".
 
-macOS builds may be unsigned. If macOS reports that the app is damaged or
-cannot be opened, clear the quarantine attribute:
+macOS builds are ad-hoc signed but not notarized. On first launch macOS may say
+that it cannot verify the developer: open **System Settings → Privacy &
+Security** and click **Open Anyway**. If macOS still reports that the app is
+damaged, clear the quarantine attribute:
 
 ```shell
 xattr -cr "/Applications/Moclash.app"
