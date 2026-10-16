@@ -2,9 +2,15 @@ use crate::core::notify::NoticeStatus;
 use crate::core::notify::{Refresh, announce};
 use crate::{
     cmd,
-    config::{Config, PrfItem, PrfOption, profiles::profiles_update_item_safe},
+    config::{
+        Config, HwidLimitReached, PrfItem, PrfOption,
+        profiles::{profiles_mark_hwid_limited_safe, profiles_update_item_safe},
+    },
     core::{CoreManager, handle, tray, validate::ValidationOutcome},
-    utils::help::{mask_err, mask_url},
+    utils::{
+        help::{mask_err, mask_url},
+        retry::RetryError,
+    },
 };
 use anyhow::{Result, bail};
 use clash_verge_logging::{Type, logging, logging_error};
@@ -164,16 +170,22 @@ async fn perform_profile_update(
                     Strategy::System => "system_elapsed",
                 };
                 tracing::Span::current().record(elapsed_field, tracing::field::debug(started.elapsed()));
-                match &result {
-                    Ok(_) => logging!(info, Type::Config, "{success}"),
-                    Err(error) => logging!(
-                        warn,
-                        Type::Config,
-                        "{}",
-                        failure.replace("{}", &mask_err(&format!("{error:#}")))
-                    ),
+                match result {
+                    Ok(item) => {
+                        logging!(info, Type::Config, "{success}");
+                        Ok(item)
+                    }
+                    Err(error) if error.is::<HwidLimitReached>() => Err(RetryError::Stop(error)),
+                    Err(error) => {
+                        logging!(
+                            warn,
+                            Type::Config,
+                            "{}",
+                            failure.replace("{}", &mask_err(&format!("{error:#}")))
+                        );
+                        Err(RetryError::Retry(error))
+                    }
                 }
-                result
             }
         })
         .await;
@@ -188,6 +200,26 @@ async fn perform_profile_update(
         }
         Err(error) => error,
     };
+
+    if let Some(limit) = last_err.downcast_ref::<HwidLimitReached>() {
+        logging!(
+            warn,
+            Type::Config,
+            "[订阅更新] {profile_name}: device limit reached, keeping the existing profile"
+        );
+        logging_error!(
+            Type::Config,
+            profiles_mark_hwid_limited_safe(uid, limit.support_url.clone()).await
+        );
+        announce(Refresh::Profiles);
+        if is_mannual_trigger {
+            handle::Handle::notice(
+                NoticeStatus::ProfileHwidLimit,
+                limit.support_url.as_deref().unwrap_or_default(),
+            );
+        }
+        return Err(last_err);
+    }
 
     let last_err = mask_err(&last_err.to_string());
     if is_mannual_trigger {

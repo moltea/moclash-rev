@@ -46,7 +46,7 @@ pub async fn try_strategies<
     S: Copy + Send,
     T: Send,
     E: Send,
-    Fut: Future<Output = Result<T, E>> + Send,
+    Fut: Future<Output = Result<T, RetryError<E>>> + Send,
     const N: usize,
 >(
     first: S,
@@ -58,7 +58,7 @@ pub async fn try_strategies<
         move |attempt| {
             let strategy = if attempt == 0 { first } else { rest[attempt - 1] };
             let future = operation(strategy);
-            async move { future.await.map(|value| (strategy, value)).map_err(RetryError::Retry) }
+            async move { future.await.map(|value| (strategy, value)) }
         },
     )
     .await
@@ -148,7 +148,7 @@ mod tests {
         let mut visited = Vec::new();
         let result = try_strategies("direct", ["clash", "system"], |strategy| {
             visited.push(strategy);
-            async move { Err::<(), _>(strategy) }
+            async move { Err::<(), _>(RetryError::Retry(strategy)) }
         })
         .await;
         assert_eq!(result, Err("system"));

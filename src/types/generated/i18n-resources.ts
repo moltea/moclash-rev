@@ -309,6 +309,9 @@ export interface TranslationResources {
           }
         }
         profileItem: {
+          labels: {
+            hwidLimited: string
+          }
           status: {
             autoUpdateDisabled: string
             lastUpdateFailed: string
@@ -319,6 +322,7 @@ export interface TranslationResources {
           tooltips: {
             showLast: string
             showNext: string
+            support: string
           }
         }
       }
@@ -457,6 +461,7 @@ export interface TranslationResources {
             createFailed: string
             deleteFailed: string
             enhanceFailed: string
+            hwidLimit: string
             importFailed: string
             invalidUrl: string
             onlyYaml: string
@@ -1379,6 +1384,7 @@ export interface TranslationResources {
           tooltips: {
             customHwid: string
             sendHwid: string
+            sharedDevice: string
           }
         }
         proxyControl: {

@@ -44,6 +44,8 @@ pub enum NoticeStatus {
     ReactivateProfilesError,
     #[serde(rename = "update_failed")]
     UpdateFailed,
+    #[serde(rename = "profile::hwid_limit")]
+    ProfileHwidLimit,
     #[serde(rename = "config_validate::boot_error")]
     ConfigValidateBootError,
     #[serde(rename = "config_validate::error")]
@@ -83,7 +85,7 @@ impl NoticeStatus {
     /// test both derive their variant list from here; expected strings stay
     /// hand-written in the test so renames cannot slip through.
     #[cfg(test)]
-    pub const ALL: [Self; 34] = [
+    pub const ALL: [Self; 35] = [
         Self::Info,
         Self::ImportSubUrlOk,
         Self::ImportSubUrlError,
@@ -102,6 +104,7 @@ impl NoticeStatus {
         Self::UpdateFailedEvenWithClash,
         Self::ReactivateProfilesError,
         Self::UpdateFailed,
+        Self::ProfileHwidLimit,
         Self::ConfigValidateBootError,
         Self::ConfigValidateError,
         Self::ConfigValidateProcessTerminated,
@@ -147,6 +150,7 @@ mod tests {
             "update_failed_even_with_clash",
             "reactivate_profiles::error",
             "update_failed",
+            "profile::hwid_limit",
             "config_validate::boot_error",
             "config_validate::error",
             "config_validate::process_terminated",

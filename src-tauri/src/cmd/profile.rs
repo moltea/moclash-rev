@@ -5,7 +5,7 @@ use crate::core::notify::NoticeStatus;
 use crate::utils::window_manager::WindowManager;
 use crate::{
     config::{
-        Config, IProfiles, PrfItem, PrfOption,
+        Config, HwidLimitReached, IProfiles, PrfItem, PrfOption,
         profiles::{
             PROFILE_WRITE_LOCK, profiles_append_item_with_filedata_safe, profiles_patch_item_safe,
             profiles_reorder_safe, profiles_save_file_safe,
@@ -23,6 +23,11 @@ use smartstring::alias::String;
 use std::sync::atomic::{AtomicBool, Ordering};
 
 static CURRENT_SWITCHING_PROFILE: AtomicBool = AtomicBool::new(false);
+
+fn hwid_limit_error(err: &anyhow::Error) -> Option<super::CommandFailure> {
+    err.downcast_ref::<HwidLimitReached>()
+        .map(|limit| coded_error("PROFILE_HWID_LIMIT", limit.support_url.as_deref().unwrap_or_default()))
+}
 
 fn profile_import_error(err: &anyhow::Error) -> std::string::String {
     if let Some(cause) = err.chain().find(|cause| cause.to_string().contains("TLS 1.0/1.1")) {
@@ -73,7 +78,9 @@ pub async fn import_profile(url: std::string::String, option: Option<PrfOption>)
         Ok(it) => it,
         Err(e) => {
             logging!(error, Type::Cmd, "[导入订阅] 下载失败: {e:#}");
-            return Err(coded_error("PROFILE_IMPORT_FAILED", profile_import_error(&e)));
+            return Err(
+                hwid_limit_error(&e).unwrap_or_else(|| coded_error("PROFILE_IMPORT_FAILED", profile_import_error(&e)))
+            );
         }
     };
 
@@ -144,7 +151,7 @@ pub async fn update_profile(index: std::string::String, option: Option<PrfOption
         Ok(_) => Ok(()),
         Err(e) => {
             logging!(error, Type::Cmd, "update profile failed: {e:#}");
-            Err(coded_error("PROFILE_UPDATE_FAILED", e))
+            Err(hwid_limit_error(&e).unwrap_or_else(|| coded_error("PROFILE_UPDATE_FAILED", e)))
         }
     }
 }

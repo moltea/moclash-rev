@@ -37,7 +37,8 @@
         "readFailed": "Abonnement konnte nicht gelesen werden",
         "reorderFailed": "Abonnements konnten nicht neu angeordnet werden",
         "switchFailed": "Abonnement konnte nicht gewechselt werden",
-        "updateFailed": "Abonnement konnte nicht aktualisiert werden"
+        "updateFailed": "Abonnement konnte nicht aktualisiert werden",
+        "hwidLimit": "Device limit reached for this subscription. Remove an old device in your provider's bot/panel or set a custom HWID in Settings → Send HWID."
       },
       "notifications": {
         "importRetry": "Import des Abonnements fehlgeschlagen. Versuche es mit dem Clash-Proxy erneut...",
@@ -97,7 +98,8 @@
     "profileItem": {
       "tooltips": {
         "showLast": "Klicken, um die Zeit der letzten Aktualisierung anzuzeigen",
-        "showNext": "Klicken, um die nächste Aktualisierung anzuzeigen"
+        "showNext": "Klicken, um die nächste Aktualisierung anzuzeigen",
+        "support": "Contact support"
       },
       "status": {
         "lastUpdateFailed": "Letzte Aktualisierung fehlgeschlagen",
@@ -105,6 +107,9 @@
         "noSchedule": "Kein Zeitplan",
         "unknown": "Unbekannt",
         "autoUpdateDisabled": "Automatische Aktualisierung deaktiviert"
+      },
+      "labels": {
+        "hwidLimited": "Device limit reached"
       }
     }
   },

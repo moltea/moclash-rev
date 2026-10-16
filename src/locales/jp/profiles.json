@@ -37,7 +37,8 @@
         "readFailed": "プロファイルの読み込みに失敗しました",
         "reorderFailed": "プロファイルの並べ替えに失敗しました",
         "switchFailed": "プロファイルの切り替えに失敗しました",
-        "updateFailed": "プロファイルの更新に失敗しました"
+        "updateFailed": "プロファイルの更新に失敗しました",
+        "hwidLimit": "Device limit reached for this subscription. Remove an old device in your provider's bot/panel or set a custom HWID in Settings → Send HWID."
       },
       "notifications": {
         "importRetry": "インポートに失敗しました。Clashプロキシを使用して再試行します...",
@@ -97,7 +98,8 @@
     "profileItem": {
       "tooltips": {
         "showLast": "Click to show last update time",
-        "showNext": "Click to show next update"
+        "showNext": "Click to show next update",
+        "support": "Contact support"
       },
       "status": {
         "lastUpdateFailed": "前回の更新に失敗しました。",
@@ -105,6 +107,9 @@
         "noSchedule": "予定がありません。",
         "unknown": "不明",
         "autoUpdateDisabled": "自動更新が無効になっています。"
+      },
+      "labels": {
+        "hwidLimited": "Device limit reached"
       }
     }
   },

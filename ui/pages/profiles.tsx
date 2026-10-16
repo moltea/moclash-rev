@@ -46,7 +46,7 @@ import {
   updateProfile,
 } from '@/services/cmds'
 import { mutate } from '@/services/mutate'
-import { errorDetail, showNotice } from '@/services/notice-service'
+import { errorDetail, failureCode, showNotice } from '@/services/notice-service'
 import { revalidateQuery, useQuery } from '@/services/query-client'
 import {
   useProfileLoadingCache,
@@ -270,7 +270,10 @@ const ProfilePage = () => {
       console.warn('[订阅导入] 首次导入失败:', initialErr)
 
       const initialDetail = errorDetail(initialErr)
-      if (initialDetail.toLowerCase().includes('legacy tls')) {
+      if (
+        initialDetail.toLowerCase().includes('legacy tls') ||
+        failureCode(initialErr) === 'PROFILE_HWID_LIMIT'
+      ) {
         showNotice.error(initialErr)
         return
       }

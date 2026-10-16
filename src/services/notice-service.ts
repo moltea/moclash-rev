@@ -71,6 +71,7 @@ const CODED_ERROR_TRANSLATION_KEYS: Readonly<Record<string, TranslationKey>> = {
   PROFILE_CREATE_FAILED: 'profiles.page.feedback.errors.createFailed',
   PROFILE_DELETE_FAILED: 'profiles.page.feedback.errors.deleteFailed',
   PROFILE_ENHANCE_FAILED: 'profiles.page.feedback.errors.enhanceFailed',
+  PROFILE_HWID_LIMIT: 'profiles.page.feedback.errors.hwidLimit',
   PROFILE_IMPORT_FAILED: 'profiles.page.feedback.errors.importFailed',
   PROFILE_OPEN_FAILED: 'profiles.page.feedback.errors.openFailed',
   PROFILE_READ_FAILED: 'profiles.page.feedback.errors.readFailed',
@@ -490,7 +491,7 @@ const baseShowNotice = (
   return id
 }
 
-function failureCode(input: unknown): string | undefined {
+export function failureCode(input: unknown): string | undefined {
   return isCommandFailure(input) ? input.code! : undefined
 }
 

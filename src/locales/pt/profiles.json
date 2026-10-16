@@ -37,7 +37,8 @@
         "readFailed": "Falha ao ler o perfil",
         "reorderFailed": "Falha ao reordenar os perfis",
         "switchFailed": "Falha ao trocar de perfil",
-        "updateFailed": "Falha ao atualizar o perfil"
+        "updateFailed": "Falha ao atualizar o perfil",
+        "hwidLimit": "Device limit reached for this subscription. Remove an old device in your provider's bot/panel or set a custom HWID in Settings → Send HWID."
       },
       "notifications": {
         "importRetry": "Falha na importação, tentando novamente com o proxy Clash...",
@@ -97,7 +98,8 @@
     "profileItem": {
       "tooltips": {
         "showLast": "Clique para mostrar a última atualização",
-        "showNext": "Clique para mostrar a próxima atualização"
+        "showNext": "Clique para mostrar a próxima atualização",
+        "support": "Contact support"
       },
       "status": {
         "lastUpdateFailed": "Falha na última atualização",
@@ -105,6 +107,9 @@
         "noSchedule": "Sem agendamento",
         "unknown": "Desconhecido",
         "autoUpdateDisabled": "Atualização automática desativada"
+      },
+      "labels": {
+        "hwidLimited": "Device limit reached"
       }
     }
   },

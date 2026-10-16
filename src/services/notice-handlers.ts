@@ -205,6 +205,11 @@ export const handleNoticeMessage = (
       ),
     'reactivate_profiles::error': () => showNotice.error(msg),
     update_failed: () => showNotice.error(msg),
+    'profile::hwid_limit': () =>
+      showNotice.error(
+        'profiles.page.feedback.errors.hwidLimit',
+        msg || undefined,
+      ),
     'config_validate::boot_error': () =>
       showNotice.error('shared.feedback.validation.config.bootFailed', msg),
     'config_validate::error': () =>

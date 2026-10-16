@@ -604,6 +604,7 @@ export type NoticeStatus =
   | 'update_failed_even_with_clash'
   | 'reactivate_profiles::error'
   | 'update_failed'
+  | 'profile::hwid_limit'
   | 'config_validate::boot_error'
   | 'config_validate::error'
   | 'config_validate::process_terminated'
@@ -670,6 +671,9 @@ export type PrfItem_Deserialize = {
   updated?: number | null
   option?: PrfOption_Deserialize | null
   home?: string | null
+  announce?: string | null
+  support_url?: string | null
+  hwid_limited?: boolean | null
 }
 
 export type PrfItem_Serialize = {
@@ -686,6 +690,9 @@ export type PrfItem_Serialize = {
   updated: number | null
   option?: PrfOption_Serialize | null
   home?: string | null
+  announce?: string | null
+  support_url?: string | null
+  hwid_limited?: boolean | null
 }
 
 export type PrfOption = PrfOption_Serialize | PrfOption_Deserialize

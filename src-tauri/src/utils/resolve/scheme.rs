@@ -5,7 +5,7 @@ use smartstring::alias::String;
 use tauri::Url;
 
 use crate::{
-    config::{Config, PrfItem, profiles},
+    config::{Config, HwidLimitReached, PrfItem, profiles},
     core::{CoreManager, handle, timer::Timer},
     utils::help,
 };
@@ -117,7 +117,13 @@ async fn fetch_profile_item(url: &str, name: Option<&String>) -> Option<PrfItem>
         Ok(item) => Some(item),
         Err(e) => {
             logging!(error, Type::Config, "failed to parse profile from url: {:?}", e);
-            handle::Handle::notice(NoticeStatus::ImportSubUrlError, e.to_string());
+            match e.downcast_ref::<HwidLimitReached>() {
+                Some(limit) => handle::Handle::notice(
+                    NoticeStatus::ProfileHwidLimit,
+                    limit.support_url.as_deref().unwrap_or_default(),
+                ),
+                None => handle::Handle::notice(NoticeStatus::ImportSubUrlError, e.to_string()),
+            }
             None
         }
     }

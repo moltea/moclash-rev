@@ -37,7 +37,8 @@
         "readFailed": "读取订阅失败",
         "reorderFailed": "调整订阅顺序失败",
         "switchFailed": "切换订阅失败",
-        "updateFailed": "更新订阅失败"
+        "updateFailed": "更新订阅失败",
+        "hwidLimit": "Device limit reached for this subscription. Remove an old device in your provider's bot/panel or set a custom HWID in Settings → Send HWID."
       },
       "notifications": {
         "importRetry": "订阅导入失败，尝试使用 Clash 代理导入",
@@ -97,7 +98,8 @@
     "profileItem": {
       "tooltips": {
         "showLast": "点击查看上次更新时间",
-        "showNext": "点击查看下一次更新"
+        "showNext": "点击查看下一次更新",
+        "support": "Contact support"
       },
       "status": {
         "lastUpdateFailed": "上次更新失败",
@@ -105,6 +107,9 @@
         "noSchedule": "没有计划",
         "unknown": "未知",
         "autoUpdateDisabled": "自动更新已禁用"
+      },
+      "labels": {
+        "hwidLimited": "Device limit reached"
       }
     }
   },

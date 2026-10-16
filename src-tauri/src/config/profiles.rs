@@ -294,6 +294,9 @@ impl IProfiles {
                     each.extra = item.extra;
                     each.updated = item.updated;
                     each.home = item.home.to_owned();
+                    each.announce = item.announce.to_owned();
+                    each.support_url = item.support_url.to_owned();
+                    each.hwid_limited = None;
                     each.option = PrfOption::merge(each.option.as_ref(), item.option.as_ref());
                     if let Some(file_data) = item.file_data.take() {
                         let file = each.file.take();
@@ -314,6 +317,20 @@ impl IProfiles {
             }
         }
 
+        self.save_file().await
+    }
+
+    async fn mark_hwid_limited(&mut self, uid: &str, support_url: Option<String>) -> Result<()> {
+        let item = self
+            .items
+            .iter_mut()
+            .flatten()
+            .find(|each| each.uid.as_deref() == Some(uid))
+            .ok_or_else(|| anyhow::anyhow!("failed to find the profile item \"uid:{uid}\""))?;
+        item.hwid_limited = Some(true);
+        if support_url.is_some() {
+            item.support_url = support_url;
+        }
         self.save_file().await
     }
 
@@ -470,6 +487,16 @@ pub(crate) async fn profiles_update_item_safe(index: &str, item: &mut PrfItem) -
         .await
         .with_data_modify(|mut profiles| async move {
             profiles.update_item(index, item).await?;
+            Ok((profiles, ()))
+        })
+        .await
+}
+
+pub(crate) async fn profiles_mark_hwid_limited_safe(uid: &str, support_url: Option<String>) -> Result<()> {
+    Config::profiles()
+        .await
+        .with_data_modify(|mut profiles| async move {
+            profiles.mark_hwid_limited(uid, support_url).await?;
             Ok((profiles, ()))
         })
         .await

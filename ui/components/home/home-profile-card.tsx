@@ -6,8 +6,10 @@ import {
   DatabaseIcon,
   ExternalLinkIcon,
   GaugeIcon,
+  LifeBuoyIcon,
   RefreshCwIcon,
   ServerIcon,
+  TriangleAlertIcon,
 } from 'lucide-react'
 import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -20,8 +22,14 @@ import { showNotice } from '@/services/notice-service'
 import { isValidUrl } from '@/utils/network'
 import { openExternalUrl } from '@/utils/open-external-url'
 import parseTraffic from '@/utils/parse-traffic'
+import { Badge } from '@ui/components/ui/badge'
 import { Button } from '@ui/components/ui/button'
 import { Progress } from '@ui/components/ui/progress'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@ui/components/ui/tooltip'
 import { cn } from '@ui/lib/utils'
 
 import { EnhancedCard } from './enhanced-card'
@@ -148,6 +156,26 @@ const ProfileDetails = ({
           </div>
         </>
       )}
+
+      {current.hwid_limited && (
+        <Badge variant="destructive">
+          <TriangleAlertIcon />
+          {t('profiles.components.profileItem.labels.hwidLimited')}
+        </Badge>
+      )}
+
+      {current.announce && (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <p className="line-clamp-3 whitespace-pre-line">
+              {current.announce}
+            </p>
+          </TooltipTrigger>
+          <TooltipContent className="max-w-xs whitespace-pre-line">
+            {current.announce}
+          </TooltipContent>
+        </Tooltip>
+      )}
     </div>
   )
 }
@@ -229,11 +257,34 @@ export const HomeProfileCard = ({
   const cardAction = useMemo(() => {
     if (!current) return null
 
+    const supportUrl = current.support_url
+
     return (
-      <Button variant="outline" size="sm" onClick={goToProfiles}>
-        {t('layout.components.navigation.tabs.profiles')}
-        <DatabaseIcon data-icon="inline-end" />
-      </Button>
+      <div className="flex items-center gap-1">
+        {supportUrl && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon-sm"
+                aria-label={t(
+                  'profiles.components.profileItem.tooltips.support',
+                )}
+                onClick={() => openProfileHome(supportUrl)}
+              >
+                <LifeBuoyIcon />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {t('profiles.components.profileItem.tooltips.support')}
+            </TooltipContent>
+          </Tooltip>
+        )}
+        <Button variant="outline" size="sm" onClick={goToProfiles}>
+          {t('layout.components.navigation.tabs.profiles')}
+          <DatabaseIcon data-icon="inline-end" />
+        </Button>
+      </div>
     )
   }, [current, goToProfiles, t])
 

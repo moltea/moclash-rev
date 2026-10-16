@@ -4,7 +4,9 @@ import dayjs from 'dayjs'
 import {
   EllipsisVerticalIcon,
   GripVerticalIcon,
+  LifeBuoyIcon,
   RefreshCwIcon,
+  TriangleAlertIcon,
 } from 'lucide-react'
 import {
   type MouseEvent,
@@ -49,6 +51,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@ui/components/ui/alert-dialog'
+import { Badge } from '@ui/components/ui/badge'
 import { Button } from '@ui/components/ui/button'
 import { Checkbox } from '@ui/components/ui/checkbox'
 import {
@@ -336,6 +339,11 @@ const ProfileItemBase = (props: ProfileItemProps) => {
   const onOpenHome = () => {
     if (!itemData.home) return
     void openExternalUrl(itemData.home).catch(showNotice.error)
+  }
+
+  const onOpenSupport = () => {
+    if (!itemData.support_url) return
+    void openExternalUrl(itemData.support_url).catch(showNotice.error)
   }
 
   const onEditInfo = () => {
@@ -687,6 +695,28 @@ const ProfileItemBase = (props: ProfileItemProps) => {
                   >
                     {name}
                   </h2>
+                  {itemData.support_url && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon-xs"
+                          aria-label={t(
+                            'profiles.components.profileItem.tooltips.support',
+                          )}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            onOpenSupport()
+                          }}
+                        >
+                          <LifeBuoyIcon />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        {t('profiles.components.profileItem.tooltips.support')}
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
                   {hasUrl && (
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -773,6 +803,26 @@ const ProfileItemBase = (props: ProfileItemProps) => {
                     </button>
                   )}
                 </div>
+
+                {itemData.hwid_limited && (
+                  <Badge variant="destructive">
+                    <TriangleAlertIcon />
+                    {t('profiles.components.profileItem.labels.hwidLimited')}
+                  </Badge>
+                )}
+
+                {itemData.announce && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <p className="line-clamp-3 whitespace-pre-line">
+                        {itemData.announce}
+                      </p>
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs whitespace-pre-line">
+                      {itemData.announce}
+                    </TooltipContent>
+                  </Tooltip>
+                )}
 
                 {hasExtra ? (
                   <div className="flex h-5 items-center justify-between gap-2 tabular-nums">

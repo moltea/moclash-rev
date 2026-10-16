@@ -162,7 +162,8 @@
       },
       "tooltips": {
         "sendHwid": "Send the x-hwid, x-device-os, x-ver-os and x-device-model headers when downloading subscriptions (Remnawave/Happ compatible)",
-        "customHwid": "Leave empty to use the HWID generated for this device"
+        "customHwid": "Leave empty to use the HWID generated for this device",
+        "sharedDevice": "To share a device slot with another app, the HWID must match the one registered at your provider."
       },
       "placeholders": {
         "customHwid": "10–64 characters: A-Z a-z 0-9 = -"

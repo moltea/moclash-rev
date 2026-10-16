@@ -37,7 +37,8 @@
         "readFailed": "خواندن پروفایل ناموفق بود",
         "reorderFailed": "تغییر ترتیب پروفایل‌ها ناموفق بود",
         "switchFailed": "تعویض پروفایل ناموفق بود",
-        "updateFailed": "به‌روزرسانی پروفایل ناموفق بود"
+        "updateFailed": "به‌روزرسانی پروفایل ناموفق بود",
+        "hwidLimit": "Device limit reached for this subscription. Remove an old device in your provider's bot/panel or set a custom HWID in Settings → Send HWID."
       },
       "notifications": {
         "importRetry": "Import failed, retrying with Clash proxy...",
@@ -97,7 +98,8 @@
     "profileItem": {
       "tooltips": {
         "showLast": "Click to show last update time",
-        "showNext": "Click to show next update"
+        "showNext": "Click to show next update",
+        "support": "Contact support"
       },
       "status": {
         "lastUpdateFailed": "Last Update failed",
@@ -105,6 +107,9 @@
         "noSchedule": "No schedule",
         "unknown": "Unknown",
         "autoUpdateDisabled": "Auto update disabled"
+      },
+      "labels": {
+        "hwidLimited": "Device limit reached"
       }
     }
   },

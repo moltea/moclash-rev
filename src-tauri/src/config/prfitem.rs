@@ -7,6 +7,8 @@ use crate::{
     },
 };
 use anyhow::{Context as _, Result, bail};
+use base64::{Engine as _, engine::general_purpose};
+use reqwest::header::HeaderMap;
 use serde::{Deserialize, Serialize};
 use serde_yaml_ng::Mapping;
 use smartstring::alias::String;
@@ -25,6 +27,57 @@ pub(super) fn normalize_profile_home_url(raw: &str) -> Option<String> {
 
     url.host_str()?;
     Some(url.to_string().into())
+}
+
+#[derive(Debug)]
+pub struct HwidLimitReached {
+    pub support_url: Option<String>,
+}
+
+impl std::fmt::Display for HwidLimitReached {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("the subscription provider refused this device: device limit reached")
+    }
+}
+
+impl std::error::Error for HwidLimitReached {}
+
+fn header_value<'a>(headers: &'a HeaderMap, name: &str) -> Option<&'a str> {
+    headers.iter().find_map(|(key, value)| {
+        key.as_str()
+            .strip_suffix(name)
+            .is_some_and(|prefix| prefix.is_empty() || prefix.ends_with('-'))
+            .then(|| std::str::from_utf8(value.as_bytes()).ok())
+            .flatten()
+    })
+}
+
+fn header_text(headers: &HeaderMap, name: &str) -> Option<String> {
+    let raw = header_value(headers, name)?.trim();
+    let text = match raw.strip_prefix("base64:") {
+        Some(encoded) => decode_base64_text(encoded).unwrap_or_else(|| raw.into()),
+        None => raw.into(),
+    };
+    let text = text.trim();
+    (!text.is_empty()).then(|| text.into())
+}
+
+fn decode_base64_text(encoded: &str) -> Option<std::string::String> {
+    let encoded = encoded.trim().trim_end_matches('=');
+    let bytes = general_purpose::STANDARD_NO_PAD
+        .decode(encoded)
+        .or_else(|_| general_purpose::URL_SAFE_NO_PAD.decode(encoded))
+        .ok()?;
+    std::string::String::from_utf8(bytes).ok()
+}
+
+fn hwid_limit_reached(headers: &HeaderMap) -> bool {
+    ["hwid-limit", "hwid-max-devices-reached"].iter().any(|name| {
+        header_value(headers, name).is_some_and(|value| {
+            let value = value.trim();
+            value == "1" || value.eq_ignore_ascii_case("true")
+        })
+    })
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize, Default, specta::Type)]
@@ -68,6 +121,17 @@ pub struct PrfItem {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[specta(type = Option<std::string::String>)]
     pub home: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[specta(type = Option<std::string::String>)]
+    pub announce: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[specta(type = Option<std::string::String>)]
+    pub support_url: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub hwid_limited: Option<bool>,
 
     #[serde(skip)]
     #[specta(type = Option<std::string::String>)]
@@ -246,6 +310,9 @@ impl PrfItem {
                 ..PrfOption::default()
             }),
             home: None,
+            announce: None,
+            support_url: None,
+            hwid_limited: None,
             updated: Some(chrono::Local::now().timestamp() as usize),
             file_data: Some(file_data.unwrap_or_else(|| tmpl::ITEM_LOCAL.into())),
         })
@@ -305,6 +372,11 @@ impl PrfItem {
         }
 
         let header = resp.headers();
+
+        let support_url = header_value(header, "support-url").and_then(normalize_profile_home_url);
+        if hwid_limit_reached(header) {
+            return Err(HwidLimitReached { support_url }.into());
+        }
 
         let extra;
         'extra: {
@@ -366,11 +438,13 @@ impl PrfItem {
             .get("profile-web-page-url")
             .and_then(|value| value.to_str().ok())
             .and_then(normalize_profile_home_url);
+        let announce = header_text(header, "announce");
 
         let uid = help::get_uid("R").into();
         let file = format!("{uid}.yaml").into();
         let name = name
             .map(|s| s.to_owned())
+            .or_else(|| header_text(header, "profile-title"))
             .unwrap_or_else(|| filename.map(|s| s.into()).unwrap_or_else(|| "Remote File".into()));
         let data = resp.text();
 
@@ -429,6 +503,9 @@ impl PrfItem {
                 ..PrfOption::default()
             }),
             home,
+            announce,
+            support_url,
+            hwid_limited: None,
             updated: Some(chrono::Local::now().timestamp() as usize),
             file_data: Some(data.into()),
         })
@@ -577,4 +654,25 @@ fn fix_dirty_url(input: &str) -> Result<Url> {
     }
 
     Ok(url)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{HeaderMap, header_text, hwid_limit_reached};
+    use reqwest::header::HeaderValue;
+
+    #[test]
+    fn remnawave_headers_decode_text_and_detect_the_device_limit() {
+        let mut headers = HeaderMap::new();
+        headers.insert("profile-title", HeaderValue::from_static("base64:0JzQvtC5INCS0J/QnQ"));
+        headers.insert("announce", HeaderValue::from_static("base64:bGluZSBvbmUKbGluZSB0d28="));
+        headers.insert("x-hwid-max-devices-reached", HeaderValue::from_static("true"));
+        assert_eq!(header_text(&headers, "profile-title").as_deref(), Some("Мой ВПН"));
+        assert_eq!(header_text(&headers, "announce").as_deref(), Some("line one\nline two"));
+        assert!(hwid_limit_reached(&headers));
+        headers.insert("announce", HeaderValue::from_static("base64:not*base64"));
+        headers.insert("x-hwid-max-devices-reached", HeaderValue::from_static("false"));
+        assert_eq!(header_text(&headers, "announce").as_deref(), Some("base64:not*base64"));
+        assert!(!hwid_limit_reached(&headers));
+    }
 }

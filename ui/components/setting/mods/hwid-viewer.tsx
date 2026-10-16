@@ -150,6 +150,9 @@ export function HwidViewer({ ref }: { ref?: Ref<DialogRef> }) {
                 {t('settings.sections.hwid.tooltips.customHwid')}
               </FieldDescription>
             )}
+            <FieldDescription>
+              {t('settings.sections.hwid.tooltips.sharedDevice')}
+            </FieldDescription>
           </FieldContent>
         </Field>
       </FieldGroup>
