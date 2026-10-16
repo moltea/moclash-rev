@@ -65,6 +65,10 @@ xattr -cr "/Applications/Moclash.app"
 - Tray quick panel for switching the proxy mode and server without opening
   the main window (see below), plus the tray menu and global hotkeys.
 - **Send HWID** for subscriptions that enforce device limits (see below).
+- **Happ compatibility mode** that fetches the full Xray server list from
+  Remnawave-style panels and converts it to Mihomo (see below).
+- Subscription announcements, support links and titles sent by Remnawave
+  panels are shown on the profile cards.
 
 ## Tray quick panel
 
@@ -106,6 +110,27 @@ The HWID is derived from the operating system's machine ID (Windows
 and shortened to 16 hex characters, so the raw machine ID never leaves the
 device. You can override it with a custom HWID in the same settings section.
 The setting is off by default.
+
+## Happ compatibility mode
+
+Some subscription panels, such as Remnawave, return a different server list
+depending on the client. Mihomo clients may get a reduced YAML config, while
+Happ gets the complete list as Xray JSON, including VLESS XHTTP, VLESS
+Encryption and Trojan REALITY servers.
+
+Enable **Happ compatibility mode** when adding or editing a remote profile,
+next to the User-Agent field. Moclash then:
+
+- requests the subscription with the User-Agent of the latest Happ release
+  (you can still change it);
+- converts the Xray JSON configs (or share links) to Mihomo proxies, adds a
+  selector group with an automatic latency-based group, and converts the
+  panel's routing rules (direct, block, geosite, geoip, domains, CIDRs);
+- keeps traffic usage, announcements, the profile title and device-limit
+  handling working as usual.
+
+Servers that use features the bundled Mihomo core does not support are
+skipped and logged.
 
 ## Development
 
